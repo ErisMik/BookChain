@@ -1,7 +1,41 @@
 from block import Bloock, BloockWrapper
 
-def main():
-    pass
+BLOCKCHAIN = []
+
+def test():
+    genBlock = BloockWrapper()
+    genBlock.prevHash = 0
+    genBlock.data = "Test data please ignore"
+    BLOCKCHAIN.append(genBlock)
+
+    while True:
+        BLOCKCHAIN.append(fakeMine())
+
+        for block in BLOCKCHAIN:
+            print((block.prevHash, block.getHash()))
+
+        if len(BLOCKCHAIN) > 10:
+            break
+
+
+def fakeMine():
+    newBlock = BloockWrapper()
+    newBlock.prevHash = BLOCKCHAIN[-1].getHash()
+    newBlock.data = "My data"
+    starts_right = False
+
+    val = 0
+
+    while not starts_right:
+        print(newBlock.nonce, newBlock.getHash())
+        if newBlock.getHash()[-1] == '0':
+            starts_right = True
+        else:
+            newBlock.updateNonce(val)
+        val += 1
+
+    return newBlock
+
 
 if __name__ == "__main__":
-    main()
+    test()

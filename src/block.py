@@ -1,20 +1,27 @@
 class Bloock:
-    def __init__(data: bytearray):
+    def __init__(self, data: bytearray):
         self.data: bytearray = data
-        self.hash: str = len(data)  # FIX-ME
+        self.hash: str = f"{hash(data)}"
 
 class BloockWrapper:
-    def __init__() -> None:
+    def __init__(self) -> None:
         self.prevHash: str = ""
         self.nonce: int = 0
         self.data: str = ""
 
-        self.bloock: Bloock = Bloock(genBloockData())
+        self.updateBloock()
 
-    def genBloockData() -> bytearray:
+    def updateBloock(self) -> None:
+        self.bloock: Bloock = Bloock(self.genBloockData())
+
+    def genBloockData(self) -> bytearray:
         dataString: str = f"{self.prevHash}{self.nonce}{self.data}"
         data: bytearray = dataString.encode("utf8")
         return data
 
-    def updateNonce(newNonce: int) -> None:
+    def updateNonce(self, newNonce: int) -> None:
         self.nonce = newNonce
+        self.updateBloock()
+
+    def getHash(self) -> str:
+        return self.bloock.hash

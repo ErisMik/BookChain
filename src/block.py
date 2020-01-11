@@ -1,9 +1,13 @@
 import json
+import hashlib
 
 class Bloock:
     def __init__(self, data: bytearray):
         self.data: bytearray = data
-        self.hash: str = f"{hash(data)}"
+
+        m = hashlib.sha256()
+        m.update(self.data)
+        self.hash: str = m.hexdigest()
 
 class BloockWrapper:
     def __init__(self) -> None:
@@ -18,7 +22,7 @@ class BloockWrapper:
 
     def genBloockData(self) -> bytearray:
         dataString: str = f"{self.prevHash}{self.nonce}{self.data}"
-        data: bytearray = dataString.encode("utf8")
+        data: bytearray = dataString.encode("utf-8")
         return data
 
     def updateNonce(self, newNonce: int) -> None:
@@ -42,3 +46,5 @@ class BloockWrapper:
         self.prevHash = payload["prev_hash"]
         self.nonce = payload["nonce"]
         self.data = payload["data"]
+
+        self.updateBloock()

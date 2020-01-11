@@ -1,3 +1,5 @@
+import copy
+
 from block import Bloock, BloockWrapper
 from storage import storeBlock, readChain
 
@@ -49,6 +51,8 @@ def verifyChain():
         currBlock.deserialize(line)
 
         if prevBlock:
+            print(prevBlock.getHash(), currBlock.prevHash)
+
             if prevBlock.getHash() == currBlock.prevHash:
                 print("Good :)")
             else:
@@ -57,5 +61,5 @@ def verifyChain():
         prevBlock = currBlock
 
 if __name__ == "__main__":
-    # test()
+    test()
     verifyChain()

@@ -1,4 +1,5 @@
 from block import Bloock, BloockWrapper
+from storage import storeBlock, readChain
 
 BLOCKCHAIN = []
 
@@ -16,6 +17,9 @@ def test():
 
         if len(BLOCKCHAIN) > 10:
             break
+
+    for block in BLOCKCHAIN:
+        storeBlock(block.serialize())
 
 
 def fakeMine():
@@ -36,6 +40,22 @@ def fakeMine():
 
     return newBlock
 
+def verifyChain():
+    prevBlock = None
+    currBlock = None
+
+    for line in readChain():
+        currBlock = BloockWrapper()
+        currBlock.deserialize(line)
+
+        if prevBlock:
+            if prevBlock.getHash() == currBlock.prevHash:
+                print("Good :)")
+            else:
+                print("BAD!")
+
+        prevBlock = currBlock
 
 if __name__ == "__main__":
-    test()
+    # test()
+    verifyChain()

@@ -1,3 +1,5 @@
+import json
+
 class Bloock:
     def __init__(self, data: bytearray):
         self.data: bytearray = data
@@ -25,3 +27,18 @@ class BloockWrapper:
 
     def getHash(self) -> str:
         return self.bloock.hash
+
+    def serialize(self) -> str:
+        payload = {
+            "prev_hash": self.prevHash,
+            "nonce": self.nonce,
+            "data": self.data,
+        }
+        return json.dumps(payload)
+
+    def deserialize(self, serializedData: str) -> None:
+        payload = json.loads(serializedData)
+
+        self.prevHash = payload["prev_hash"]
+        self.nonce = payload["nonce"]
+        self.data = payload["data"]

@@ -122,6 +122,8 @@ def checkNetwork(peers, height):
     while not peers.empty():
         PEERS.add(peers.get())
 
+    marked_to_delete = []
+
     for p in PEERS:
         if p == 0:
             break
@@ -133,5 +135,9 @@ def checkNetwork(peers, height):
                 storeChain(r.json())
                 height = len(r.json())
         except Exception as e:
-            PEERS.remove(p)
+            marked_to_delete.append(p)
+
+    for m in marked_to_delete:
+        PEERS.remove(m)
+
     return not behind

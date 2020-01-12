@@ -2,7 +2,8 @@ import json
 import lzma
 import requests
 from flask import Flask, jsonify, request
-from multiprocessing import Process, Pipe, Queue
+from multiprocessing import Process, Pipe, Queue, Array
+from ctypes import c_int32
 from netaddr import IPNetwork, IPAddress
 
 from storage import readChain, getBlockById, getLatestBlock
@@ -12,7 +13,7 @@ LINK_CODE = 'Bookchain Linky'
 
 app = Flask(__name__)
 
-PEERS = []
+PEERS = Array(c_int32, 1048)
 PENDING_BOOKS = Queue()
 NETWORK_DIFFICULTY = 10
 
@@ -33,7 +34,7 @@ def find_peers():
 
             if LINK_CODE in r.text:
                 print("Found peer!")
-                PEERS.append(str(ip))
+                PEERS.append(int(ip))
         except:
             pass
 

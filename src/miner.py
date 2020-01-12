@@ -3,6 +3,7 @@ import binascii
 import random
 import requests
 import json
+from netaddr import IPAddress
 
 from block import Bloock
 from storage import storeBlock, readChain, storeChain, getLatestBlock, checkChain
@@ -44,7 +45,7 @@ def mine(a, pendingData, networkDiff, peers):
     trialNonce = random.randint(0, 9223372036854775807)
 
     while True:
-        print("Hashing with nonce: ", trialNonce)
+        # print("Hashing with nonce: ", trialNonce)
         candidate = pyrx.get_rx_hash(
             newBlock.prevHash + newBlock.data + str(trialNonce), seed_hash, height)
         candidate = binascii.hexlify(candidate).decode()
@@ -117,8 +118,8 @@ def verifyChain(chain):
 def checkNetwork(peers, height):
     behind = False
     for p in peers:
-        print(f"Verifying {str(p)}'s blockchain")
-        r = requests.get(f"http://{str(p)}:5000/blocks", timeout=1)
+        print(f"Verifying {str(IPAddress(p))}'s blockchain")
+        r = requests.get(f"http://{str(IPAddress(p))}:5000/blocks", timeout=1)
         if len(r.json) >= height and verifyChain(r.json):
             behind = True
             storeChain(r.json)

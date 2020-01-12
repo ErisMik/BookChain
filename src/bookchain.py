@@ -10,7 +10,7 @@ from storage import storeBlock, readChain
 BLOCKCHAIN = []
 # TODO: Get these params from network consensus
 seed_hash = binascii.unhexlify("0ea23341e489a9720ff4bfbd0391338918a295d46416b87dfe8a785cce9eb51d")
-difficulty = 2
+difficulty = 8
 
 
 def test():
@@ -22,15 +22,15 @@ def test():
     genBlock.seed_hash = seed_hash
     hash = pyrx.get_rx_hash(genBlock.prevHash + genBlock.data + str(genBlock.nonce), seed_hash, 1)
     genBlock.hash = binascii.hexlify(hash).decode()
-    BLOCKCHAIN.append(genBlock) 
-    
+    BLOCKCHAIN.append(genBlock)
+
     while True:
         BLOCKCHAIN.append(fakeMine(difficulty))
 
         for block in BLOCKCHAIN:
             print((block.prevHash, block.hash))
 
-        if len(BLOCKCHAIN) > 10:
+        if len(BLOCKCHAIN) > 50:
             break
 
     for block in BLOCKCHAIN:
@@ -43,7 +43,7 @@ def fakeMine(difficulty):
     newBlock.data = "My data"
     newBlock.seed_hash = seed_hash
     height = len(BLOCKCHAIN) + 1
-    
+
     #Try random nonces from 1 to 2^63-1
     trialNonce = random.randint(0,9223372036854775807)
 
@@ -69,7 +69,7 @@ def foundBlock(hash, difficulty):
     #Valid block found
     if check & hash == hash:
         return True
-    
+
 def verifyChain():
     prevBlock = None
     currBlock = None

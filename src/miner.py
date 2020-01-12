@@ -11,6 +11,7 @@ from storage import storeBlock, readChain, storeChain, getLatestBlock, checkChai
 seed_hash = binascii.unhexlify(
     "0ea23341e489a9720ff4bfbd0391338918a295d46416b87dfe8a785cce9eb51d")
 
+PEERS = set()
 
 def premine():
     if checkChain():
@@ -117,11 +118,20 @@ def verifyChain(chain):
 
 def checkNetwork(peers, height):
     behind = False
-    for p in peers:
+
+    while not peers.empty():
+        PEERS.add(peers.get())
+
+    for p in PEERS:
+        if p == 0:
+            break
         print(f"Verifying {str(IPAddress(p))}'s blockchain")
-        r = requests.get(f"http://{str(IPAddress(p))}:5000/blocks", timeout=1)
-        if len(r.json) >= height and verifyChain(r.json):
-            behind = True
-            storeChain(r.json)
-            height = len(r.json)
+        try:
+            r = requests.get(f"http://{str(IPAddress(p))}:5000/blocks", timeout=1)
+            if len(r.json()) >= height and verifyChain(r.json()):
+                behind = True
+                storeChain(r.json())
+                height = len(r.json())
+        except Exception as e:
+            PEERS.remove(p)
     return not behind

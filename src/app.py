@@ -13,7 +13,7 @@ LINK_CODE = 'Bookchain Linky'
 
 app = Flask(__name__)
 
-PEERS = Array(c_int32, 1048)
+PEERS = Queue()
 PENDING_BOOKS = Queue()
 NETWORK_DIFFICULTY = 10
 
@@ -34,9 +34,11 @@ def find_peers():
 
             if LINK_CODE in r.text:
                 print("Found peer!")
-                PEERS.append(int(ip))
+                PEERS.put(int(ip))
         except:
             pass
+
+    return jsonify({'success': True})
 
 
 @app.route('/blocks', methods=['GET'])
@@ -112,5 +114,5 @@ if __name__ == '__main__':
     p1.start()
 
     # Start server to receive transactions
-    p2 = Process(target=app.run(host="0.0.0.0", port="5000"), args=b)
+    p2 = Process(target=app.run(host="0.0.0.0", port="5000"), args=(b,))
     p2.start()

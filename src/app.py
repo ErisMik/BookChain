@@ -9,10 +9,13 @@ LINK_CODE = 'Bookchain Linky'
 
 app = Flask(__name__)
 peers = []
+networkDiff = 12
+
 
 @app.route('/')
 def pong():
     return LINK_CODE
+
 
 @app.route('/findpeers', methods=['GET'])
 def find_peers():
@@ -27,6 +30,7 @@ def find_peers():
         except:
             pass
 
+
 @app.route('/blocks', methods=['GET'])
 def blocks():
     blockchain = []
@@ -35,6 +39,7 @@ def blocks():
 
     return jsonify(blockchain)
 
+
 if __name__ == '__main__':
     print("======================")
     print("Bookchain starting up!")
@@ -42,7 +47,7 @@ if __name__ == '__main__':
 
     # Start mining
     a, b = Pipe()
-    # p1 = Process(target=mine, args=(a, BLOCKCHAIN, NODE_PENDING_TRANSACTIONS))
+    # p1 = Process(target=mine, args=(a, BLOCKCHAIN, NODE_PENDING_TRANSACTIONS, networkDiff, peers))
     # p1.start()
 
     # Start server to receive transactions

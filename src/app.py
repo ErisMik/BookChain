@@ -72,19 +72,30 @@ def createBook():
     if not isinstance(requestData['text'], str):
         return abort(400, "Text data is not text data!")
 
-    PENDING_BOOKS.append({
+    payload = {
         'meta': requestData['meta'],
         'text': compressText(requestData['text']),
-    })
+    }
+
+    PENDING_BOOKS.append(json.dumps(payload))
 
     return jsonify({'success': True})
 
 
 @app.route('/get-book/<int:blockId>', methods=['GET'])
-def getBook():
+def getBook(blockId: int):
     result = getBlockById(blockId)
     if not result:
         abort(404, "Could not find that record")
+
+    book = json.loads(result.data)
+
+    payload = {
+        'meta': book['meta'],
+        'text': uncompressText(book['text']),
+    }
+
+    return jsonify(payload)
 
 
 if __name__ == '__main__':

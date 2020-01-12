@@ -47,8 +47,13 @@ def mine(a, pendingData, networkDiff, peers):
     # Try random nonces from 1 to 2^63-1
     trialNonce = random.randint(0, 9223372036854775807)
 
+    counter = 0
     while True:
-        # print("Hashing with nonce: ", trialNonce)
+        if counter > 1000:
+            print("Still hashing with nonce: ", trialNonce)
+            counter = 0
+        counter += 1
+
         candidate = pyrx.get_rx_hash(
             newBlock.prevHash + newBlock.data + str(trialNonce), seed_hash, height)
         candidate = binascii.hexlify(candidate).decode()
@@ -89,21 +94,25 @@ def verifyChain(chain):
     prevBlock = None
     currBlock = None
 
+    print("Verifying chain...")
+
     for line in chain:
         currBlock = Bloock()
         currBlock.deserialize(line)
 
         # Run randomx to verify nonce, data, hash of block
         if prevBlock and prevBlock.hash == currBlock.prevHash:
-            print(prevBlock.hash, currBlock.prevHash)
+            # print(prevBlock.hash, currBlock.prevHash)
             verifyhash = pyrx.get_rx_hash(
                 prevBlock.hash + currBlock.data + str(currBlock.nonce), currBlock.seedHash, currBlock.height)
             verifyhash = binascii.hexlify(verifyhash).decode()
             if verifyhash == currBlock.hash:
-                print("Good :)")
+                # print("Good :)")
+                pass
             else:
                 print("BAD!")
                 return False
+
         elif not prevBlock:
             verifyhash = pyrx.get_rx_hash(
                 currBlock.prevHash + currBlock.data +
@@ -111,11 +120,14 @@ def verifyChain(chain):
             )
             verifyhash = binascii.hexlify(verifyhash).decode()
             if verifyhash == currBlock.hash:
-                print("Good genesis block :)")
+                # print("Good genesis block :)")
+                pass
             else:
                 print("BAD!")
                 return False
         prevBlock = currBlock
+
+    print("Done verifying chain")
     return True
 
 

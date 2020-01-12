@@ -20,7 +20,8 @@ NETWORK_DIFFICULTY = 14
 
 @app.route('/', methods=['GET'])
 def pong():
-    return LINK_CODE
+    print(request.host)
+    return LINK_CODE + " " + str(hash(LINK_CODE))
 
 
 @app.route('/find-peers', methods=['GET'])
@@ -32,7 +33,7 @@ def find_peers():
             r = requests.get(f"http://{str(ip)}:5000/", timeout=0.5)
             print(r.text)
 
-            if LINK_CODE in r.text:
+            if LINK_CODE in r.text and str(hash(LINK_CODE)) not in r.text:
                 print("Found peer!")
                 PEERS.put(int(ip))
         except:

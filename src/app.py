@@ -29,7 +29,7 @@ def pong():
 
 @app.route('/find-peers', methods=['GET'])
 def find_peers():
-    all_ips = list(IPNetwork("172.20.10.0/24"))
+    all_ips = list(IPNetwork("10.42.0.0/24"))
     for ip in all_ips:
         try:
             print(f"Trying: {str(ip)}")
@@ -53,6 +53,17 @@ def blocks():
 
     return jsonify(blockchain)
 
+@app.route('/blocks-from/<int:blockId>', methods=['GET'])
+def blocksFrom(blockId):
+    blockchainSlice = []
+    count = 0
+    for block in readChain():
+        count += 1
+        if count < blockId:
+            continue
+        blockchainSlice.append(block)
+
+    return jsonify(blockchainSlice)
 
 def compressText(text: str) -> str:
     rawEncodedText = text.encode('utf-8')

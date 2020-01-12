@@ -2,6 +2,8 @@ import json
 import lzma
 import requests
 from flask import Flask, jsonify, request
+from flask_cors import CORS
+
 from multiprocessing import Process, Pipe, Queue, Array
 from ctypes import c_int32
 from netaddr import IPNetwork, IPAddress
@@ -12,6 +14,7 @@ from miner import mine, premine
 LINK_CODE = 'Bookchain Linky'
 
 app = Flask(__name__)
+CORS(app)
 
 PEERS = Queue()
 PENDING_BOOKS = Queue()
@@ -100,6 +103,23 @@ def getBook(blockId: int):
         'text': uncompressText(book['text']),
     }
 
+    return jsonify(payload)
+
+
+@app.route('/get-block/<int:blockId>', methods=['GET'])
+def getBlock(blockId: int):
+    result = getBlockById(blockId)
+    if not result:
+        abort(404, "Could not find that record")
+
+    payload = {
+        'hash': result.hash,
+        'data': result.data,
+        'nonce': result.nonce,
+        'height': result.height,
+        'prevhash': result.prevHash,
+        'seedhash': result.seedHash
+    }
     return jsonify(payload)
 
 

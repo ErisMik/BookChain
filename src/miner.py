@@ -13,6 +13,7 @@ seed_hash = binascii.unhexlify(
 
 PEERS = set()
 
+
 def premine():
     if checkChain():
         print("Reusing existing chain")
@@ -24,7 +25,8 @@ def premine():
         genBlock.nonce = 0
         genBlock.seed_hash = seed_hash
 
-        hash = pyrx.get_rx_hash(genBlock.prevHash + genBlock.data + str(genBlock.nonce), seed_hash, 1)
+        hash = pyrx.get_rx_hash(
+            genBlock.prevHash + genBlock.data + str(genBlock.nonce), seed_hash, 1)
         genBlock.hash = binascii.hexlify(hash).decode()
 
         storeBlock(genBlock.serialize())
@@ -51,6 +53,7 @@ def mine(a, pendingData, networkDiff, peers):
             newBlock.prevHash + newBlock.data + str(trialNonce), seed_hash, height)
         candidate = binascii.hexlify(candidate).decode()
         if foundBlock(candidate, networkDiff, height, peers):
+            print("Found block!!!")
             newBlock.nonce = trialNonce
             newBlock.hash = candidate
             newBlock.height = height
@@ -129,8 +132,10 @@ def checkNetwork(peers, height):
             break
         print(f"Verifying {str(IPAddress(p))}'s blockchain")
         try:
-            r = requests.get(f"http://{str(IPAddress(p))}:5000/blocks", timeout=1)
+            r = requests.get(
+                f"http://{str(IPAddress(p))}:5000/blocks", timeout=1)
             if len(r.json()) >= height and verifyChain(r.json()):
+                print("Found block but behind network")
                 behind = True
                 storeChain(r.json())
                 height = len(r.json())

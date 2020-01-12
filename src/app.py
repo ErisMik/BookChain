@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 PEERS = Queue()
 PENDING_BOOKS = Queue()
-NETWORK_DIFFICULTY = 10
+NETWORK_DIFFICULTY = 14
 
 
 @app.route('/', methods=['GET'])
@@ -110,7 +110,8 @@ if __name__ == '__main__':
     # Start mining
     premine()
     a, b = Pipe()
-    p1 = Process(target=mine, args=(a, PENDING_BOOKS, NETWORK_DIFFICULTY, PEERS))
+    p1 = Process(target=mine, args=(
+        a, PENDING_BOOKS, NETWORK_DIFFICULTY, PEERS))
     p1.start()
 
     # Start server to receive transactions

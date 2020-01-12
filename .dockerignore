@@ -1,3 +1,4 @@
 Dockerfile
 .dockerignore
 src/__init__.py
+bookchain-explorer/

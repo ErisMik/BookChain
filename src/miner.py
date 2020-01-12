@@ -61,6 +61,7 @@ def mine(a, pendingData, networkDiff, peers):
             nextData = json.dumps(dict())
             if not pendingData.empty():
                 nextData = pendingData.get()
+            newBlock.data = nextData
             height += 1
         else:
             latestBlock = getLatestBlock()

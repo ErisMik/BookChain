@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 PEERS = []
 PENDING_BOOKS = Queue()
-NETWORK_DIFFICULTY = 12
+NETWORK_DIFFICULTY = 10
 
 
 @app.route('/', methods=['GET'])

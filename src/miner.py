@@ -2,20 +2,38 @@ import pyrx
 import binascii
 import random
 import requests
+import json
 
 from block import Bloock
-from storage import storeBlock, readChain, storeChain, getLatestBlock
+from storage import storeBlock, readChain, storeChain, getLatestBlock, checkChain
 
 seed_hash = binascii.unhexlify(
     "0ea23341e489a9720ff4bfbd0391338918a295d46416b87dfe8a785cce9eb51d")
 
 
+def premine():
+    if checkChain():
+        print("Reusing existing chain")
+    else:
+        print("Creating the genesis block")
+        genBlock = Bloock()
+        genBlock.data = json.dumps({"meta": {}, "text": "G E N E S I S"})
+        genBlock.height = 1
+        genBlock.nonce = 0
+        genBlock.seed_hash = seed_hash
+
+        hash = pyrx.get_rx_hash(genBlock.prevHash + genBlock.data + str(genBlock.nonce), seed_hash, 1)
+        genBlock.hash = binascii.hexlify(hash).decode()
+
+        storeBlock(genBlock.serialize())
+
+
 # Currently loading the entire blockchain into ram
 def mine(a, pendingData, networkDiff, peers):
     latestBlock = getLatestBlock()
-    nextData = dict()
-    if pendingData:
-        nextData = pendingData.pop()
+    nextData = json.dumps(dict())
+    if not pendingData.empty():
+        nextData = pendingData.get()
     newBlock = Bloock()
     newBlock.prevHash = latestBlock.hash
     newBlock.data = nextData
@@ -30,7 +48,7 @@ def mine(a, pendingData, networkDiff, peers):
         candidate = pyrx.get_rx_hash(
             newBlock.prevHash + newBlock.data + str(trialNonce), seed_hash, height)
         candidate = binascii.hexlify(candidate).decode()
-        if foundBlock(candidate, networkDiff, height):
+        if foundBlock(candidate, networkDiff, height, peers):
             newBlock.nonce = trialNonce
             newBlock.hash = candidate
             newBlock.height = height
@@ -40,22 +58,24 @@ def mine(a, pendingData, networkDiff, peers):
             newBlock = Bloock()
             newBlock.prevHash = latestBlock.hash
             newBlock.seed_hash = seed_hash
-            nextData = pendingData.pop()
+            nextData = json.dumps(dict())
+            if not pendingData.empty():
+                nextData = pendingData.get()
             height += 1
         else:
-            latestBlock = getLatestBlock
+            latestBlock = getLatestBlock()
             newBlock.prevHash = latestBlock.hash
 
         trialNonce = random.randint(0, 9223372036854775807)
 
 
 # Difficulty is currently # of leading 0s in binary hash
-def foundBlock(hash, difficulty, height):
+def foundBlock(hash, difficulty, height, peers):
     check = '0'*difficulty + '1'*(256-difficulty)
     check = int(check, 2)
     hash = int(hash, 16)
     # Valid block found
-    if check & hash == hash and checkNetwork(height):
+    if check & hash == hash and checkNetwork(peers, height):
         return True
 
 

@@ -1,6 +1,11 @@
+from os import path
 from block import Bloock
 
 STORAGE_FILE = "theblock.chain"
+
+
+def checkChain(fileName=STORAGE_FILE) -> bool:
+    return path.exists(fileName)
 
 
 def storeBlock(blockdata: str, fileName=STORAGE_FILE) -> None:
@@ -33,9 +38,13 @@ def getBlockById(blockId: int) -> Bloock:
 
 
 def getLatestBlock() -> Bloock:
+    s = ""
     with open(STORAGE_FILE, "r") as blockfile:
-        blockfile.seek(0, 2)
-        s = blockfile.readline()
+        for line in blockfile:
+            s = line
+    if s:
         b = Bloock()
         b.deserialize(s)
         return b
+    else:
+        return None

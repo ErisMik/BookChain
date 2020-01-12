@@ -2,17 +2,18 @@ import json
 import lzma
 import requests
 from flask import Flask, jsonify, request
-from multiprocessing import Process, Pipe
+from multiprocessing import Process, Pipe, Queue
 from netaddr import IPNetwork, IPAddress
 
 from storage import readChain, getBlockById, getLatestBlock
+from miner import mine, premine
 
 LINK_CODE = 'Bookchain Linky'
 
 app = Flask(__name__)
 
 PEERS = []
-PENDING_BOOKS = []
+PENDING_BOOKS = Queue()
 NETWORK_DIFFICULTY = 12
 
 
@@ -77,7 +78,7 @@ def createBook():
         'text': compressText(requestData['text']),
     }
 
-    PENDING_BOOKS.append(json.dumps(payload))
+    PENDING_BOOKS.put(json.dumps(payload))
 
     return jsonify({'success': True})
 
@@ -104,9 +105,9 @@ if __name__ == '__main__':
     print("======================")
 
     # Start mining
+    premine()
     a, b = Pipe()
-    p1 = Process(target=mine, args=(
-        a, PENDING_BOOKS, NETWORK_DIFFICULTY, PEERS))
+    p1 = Process(target=mine, args=(a, PENDING_BOOKS, NETWORK_DIFFICULTY, PEERS))
     p1.start()
 
     # Start server to receive transactions

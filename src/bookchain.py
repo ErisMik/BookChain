@@ -9,6 +9,7 @@ def test():
     genBlock = BloockWrapper()
     genBlock.prevHash = 0
     genBlock.data = "Test data please ignore"
+    genBlock.updateBloock()
     BLOCKCHAIN.append(genBlock)
 
     while True:
@@ -28,6 +29,7 @@ def fakeMine():
     newBlock = BloockWrapper()
     newBlock.prevHash = BLOCKCHAIN[-1].getHash()
     newBlock.data = "My data"
+    newBlock.updateBloock()
     starts_right = False
 
     val = 0

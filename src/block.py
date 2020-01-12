@@ -9,6 +9,8 @@ class Bloock:
         m.update(self.data)
         self.hash: str = m.hexdigest()
 
+        print(self.data, self.hash)
+
 class BloockWrapper:
     def __init__(self) -> None:
         self.prevHash: str = ""

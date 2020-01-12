@@ -1,4 +1,6 @@
+from block import Bloock
 STORAGE_FILE = "theblock.chain"
+
 
 def storeBlock(blockdata: str, fileName=STORAGE_FILE) -> None:
     with open(fileName, "a") as blockfile:
@@ -16,6 +18,7 @@ def readChain(fileName=STORAGE_FILE):
         for line in blockfile:
             yield line.strip()
 
+
 def getBlockById(blockId: int):
     count = 0
     with open(STORAGE_FILE, "r") as blockfile:
@@ -24,3 +27,12 @@ def getBlockById(blockId: int):
             if count == blockId:
                 return line.strip()
     return None
+
+
+def getLatestBlock():
+    with open(STORAGE_FILE, "r") as blockfile:
+        blockfile.seek(0, 2)
+        s = blockfile.readline()
+        b = Bloock()
+        b.deserialize(s)
+        return b

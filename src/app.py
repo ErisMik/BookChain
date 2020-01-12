@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request
 from multiprocessing import Process, Pipe
 from netaddr import IPNetwork, IPAddress
 
-from storage import readChain, getBlockById
+from storage import readChain, getBlockById, getLatestBlock
 
 LINK_CODE = 'Bookchain Linky'
 
@@ -94,8 +94,9 @@ if __name__ == '__main__':
 
     # Start mining
     a, b = Pipe()
-    # p1 = Process(target=mine, args=(a, BLOCKCHAIN, PENDING_BOOKS, NETWORK_DIFFICULTY, PEERS))
-    # p1.start()
+    p1 = Process(target=mine, args=(
+        a, PENDING_BOOKS, NETWORK_DIFFICULTY, PEERS))
+    p1.start()
 
     # Start server to receive transactions
     p2 = Process(target=app.run(host="0.0.0.0", port="5000"), args=b)

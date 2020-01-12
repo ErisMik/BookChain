@@ -4,20 +4,23 @@ import random
 import requests
 
 from block import Bloock
-from storage import storeBlock, readChain, storeChain
+from storage import storeBlock, readChain, storeChain, getLatestBlock
 
 seed_hash = binascii.unhexlify(
     "0ea23341e489a9720ff4bfbd0391338918a295d46416b87dfe8a785cce9eb51d")
 
 
 # Currently loading the entire blockchain into ram
-def mine(a, bc, pendingData, networkDiff, peers):
-    nextData = pendingData.pop()
+def mine(a, pendingData, networkDiff, peers):
+    latestBlock = getLatestBlock()
+    nextData = dict()
+    if pendingData:
+        nextData = pendingData.pop()
     newBlock = Bloock()
-    newBlock.prevHash = bc[-1].hash
+    newBlock.prevHash = latestBlock.hash
     newBlock.data = nextData
     newBlock.seed_hash = seed_hash
-    height = len(bc) + 1
+    height = latestBlock.height + 1
 
     # Try random nonces from 1 to 2^63-1
     trialNonce = random.randint(0, 9223372036854775807)
@@ -32,13 +35,16 @@ def mine(a, bc, pendingData, networkDiff, peers):
             newBlock.hash = candidate
             newBlock.height = height
             # Add to network chain and json file and start the next block
-            bc.append(newBlock)
             storeBlock(newBlock.serialize())
+            latestBlock = newBlock
             newBlock = Bloock()
-            newBlock.prevHash = bc[-1].hash
-            nextData = pendingData.pop()
+            newBlock.prevHash = latestBlock.hash
             newBlock.seed_hash = seed_hash
-            height = len(bc) + 1
+            nextData = pendingData.pop()
+            height += 1
+        else:
+            latestBlock = getLatestBlock
+            newBlock.prevHash = latestBlock.hash
 
         trialNonce = random.randint(0, 9223372036854775807)
 
@@ -92,7 +98,7 @@ def checkNetwork(peers, height):
     for p in peers:
         print(f"Verifying {str(p)}'s blockchain")
         r = requests.get(f"http://{str(p)}:5000/blocks", timeout=1)
-        if len(r.json) > height and verifyChain(r.json):
+        if len(r.json) >= height and verifyChain(r.json):
             behind = True
             storeChain(r.json)
             height = len(r.json)

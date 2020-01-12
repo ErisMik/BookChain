@@ -51,6 +51,7 @@ def mine(a, pendingData, networkDiff, peers):
     while True:
         if counter > 1000:
             print("Still hashing with nonce: ", trialNonce)
+            print("Mining at height: ", height)
             counter = 0
         counter += 1
 

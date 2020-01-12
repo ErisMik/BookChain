@@ -76,6 +76,7 @@ def mine(a, pendingData, networkDiff, peers):
         else:
             latestBlock = getLatestBlock()
             newBlock.prevHash = latestBlock.hash
+            height = latestBlock.height + 1
 
         trialNonce = random.randint(0, 9223372036854775807)
 

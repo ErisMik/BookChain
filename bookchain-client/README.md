@@ -1,4 +1,7 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Bookchain Client
+
+This is the default bookchain client, it allows a UI to access the Bookchain.
+It can be run locally or hosted online as a web service.
 
 ## Available Scripts
 

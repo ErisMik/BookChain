@@ -1,5 +1,0 @@
-flask
-flask_cors
-netaddr
-requests
-git+https://github.com/jtgrassie/pyrx

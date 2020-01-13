@@ -10,6 +10,7 @@ from storage import storeBlock, readChain, storeChain, getLatestBlock, checkChai
 
 seed_hash = binascii.unhexlify(
     "0ea23341e489a9720ff4bfbd0391338918a295d46416b87dfe8a785cce9eb51d")
+hexSeedHash = "0ea23341e489a9720ff4bfbd0391338918a295d46416b87dfe8a785cce9eb51d"
 
 PEERS = set()
 
@@ -23,7 +24,7 @@ def premine():
         genBlock.data = json.dumps({"meta": {}, "text": "G E N E S I S"})
         genBlock.height = 1
         genBlock.nonce = 0
-        genBlock.seed_hash = seed_hash
+        genBlock.seedHash = hexSeedHash
 
         hash = pyrx.get_rx_hash(
             genBlock.prevHash + genBlock.data + str(genBlock.nonce), seed_hash, 1)
@@ -41,7 +42,7 @@ def mine(a, pendingData, networkDiff, peers):
     newBlock = Bloock()
     newBlock.prevHash = latestBlock.hash
     newBlock.data = nextData
-    newBlock.seedHash = seed_hash
+    newBlock.seedHash = hexSeedHash
     height = latestBlock.height + 1
 
     # Try random nonces from 1 to 2^63-1
@@ -63,13 +64,13 @@ def mine(a, pendingData, networkDiff, peers):
             newBlock.nonce = trialNonce
             newBlock.hash = candidate
             newBlock.height = height
-            newBlock.seedHash = seed_hash
+            newBlock.seedHash = hexSeedHash
             # Add to network chain and json file and start the next block
             storeBlock(newBlock.serialize())
             latestBlock = newBlock
             newBlock = Bloock()
             newBlock.prevHash = latestBlock.hash
-            newBlock.seedHash = seed_hash
+            newBlock.seedHash = hexSeedHash
             nextData = json.dumps(dict())
             if not pendingData.empty():
                 nextData = pendingData.get()

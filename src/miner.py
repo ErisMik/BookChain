@@ -41,7 +41,7 @@ def mine(a, pendingData, networkDiff, peers):
     newBlock = Bloock()
     newBlock.prevHash = latestBlock.hash
     newBlock.data = nextData
-    newBlock.seed_hash = seed_hash
+    newBlock.seedHash = seed_hash
     height = latestBlock.height + 1
 
     # Try random nonces from 1 to 2^63-1
@@ -63,12 +63,13 @@ def mine(a, pendingData, networkDiff, peers):
             newBlock.nonce = trialNonce
             newBlock.hash = candidate
             newBlock.height = height
+            newBlock.seedHash = seed_hash
             # Add to network chain and json file and start the next block
             storeBlock(newBlock.serialize())
             latestBlock = newBlock
             newBlock = Bloock()
             newBlock.prevHash = latestBlock.hash
-            newBlock.seed_hash = seed_hash
+            newBlock.seedHash = seed_hash
             nextData = json.dumps(dict())
             if not pendingData.empty():
                 nextData = pendingData.get()

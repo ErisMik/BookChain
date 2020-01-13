@@ -29,7 +29,7 @@ def pong():
 
 @app.route('/find-peers', methods=['GET'])
 def find_peers():
-    all_ips = list(IPNetwork("172.20.10.0/24"))
+    all_ips = list(IPNetwork("192.168.1.0/24"))
     for ip in all_ips:
         try:
             print(f"Trying: {str(ip)}")

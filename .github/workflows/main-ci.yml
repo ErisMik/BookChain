@@ -1,0 +1,14 @@
+name: Mainline CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build Miner Docker Image
+      run: docker build bookchain-miner -t bookchain-miner:latest
+
+    - name: Build Client Docker Image
+      run: docker build bookchain-client -t bookchain-client:latest

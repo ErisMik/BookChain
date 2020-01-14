@@ -3,12 +3,39 @@ name: Mainline CI
 on: [push]
 
 jobs:
-  build:
+  Build-Miner-Docker-Images:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Build Miner Docker Image
-      run: docker build bookchain-miner -t bookchain-miner:latest
+      - uses: actions/checkout@v1
 
-    - name: Build Client Docker Image
-      run: docker build bookchain-client -t bookchain-client:latest
+      - name: Prepare Environment
+        run: git submodule update --init --recursive
+
+      - name: Build Miner Docker Image
+        run: docker build bookchain-miner -t bookchain-miner:latest
+
+
+  Build-Client-Docker-Images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Prepare Environment
+        run: git submodule update --init --recursive
+
+      - name: Build Client Docker Image
+        run: docker build bookchain-client -t bookchain-client:latest
+
+
+  Lint-Miner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Prepare Environment
+        run: |
+          git submodule update --init --recursive
+          sudo apt-get update -y
+
+      - name: Run clang-format on Miner
+        run: bash -c "! clang-format src/*.cpp -output-replacements-xml | grep -c <replacement"

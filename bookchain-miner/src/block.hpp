@@ -1,12 +1,14 @@
 #pragma once
 #include <string>
 
+constexpr size_t kilobyte = 1 * 1024;
+
 struct Block {
-    char prevHash [1];
-    char seedHash [1];
+    char prevHash [20];
+    char seedHash [20];
     int64_t blockHeight;
     int64_t nonce;
-    char data [1];
+    char data [10 * kilobyte];
 };
 
 class Bloock {

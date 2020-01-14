@@ -13,31 +13,12 @@ Bloock::Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight) 
     strcpy(this->_block.data, "i");
 }
 
-void print_bytes(const void *object, size_t size)
-{
-  // This is for C++; in C just drop the static_cast<>() and assign.
-  const unsigned char * const bytes = static_cast<const unsigned char *>(object);
-  size_t i;
-
-  printf("[ ");
-  for(i = 0; i < size; i++)
-  {
-    printf("%02x ", bytes[i]);
-  }
-  printf("]\n");
-}
-
 std::string Bloock::blockHash() {
     size_t hashLength = 20;
     unsigned char hash[hashLength];
-    Block testBlock = this->_block;
-    SHA1(reinterpret_cast<unsigned char*>(&testBlock), sizeof(this->_block), hash);
 
-    print_bytes(&testBlock, sizeof(testBlock));
-
-    std::string hashString(hash, hash + sizeof(hash) / sizeof(hash[0]));
-    std::cout << hashString << std::endl;
-    return "";
+    SHA1(reinterpret_cast<unsigned char*>(&this->_block), sizeof(this->_block), hash);
+    return std::string(hash, hash + sizeof(hash) / sizeof(hash[0]));
 }
 
 std::string Bloock::prevHash() {

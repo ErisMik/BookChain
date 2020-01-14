@@ -18,4 +18,4 @@ add_executable( miner  miner.cpp block.cpp )
 target_compile_options( miner PUBLIC "-Wall" )
 
 target_include_directories( miner PUBLIC "${CMAKE_SOURCE_DIR}" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )
-target_link_libraries( miner PUBLIC pthread PRIVATE nlohmann_json::nlohmann_json )
+target_link_libraries( miner PUBLIC pthread crypto PRIVATE nlohmann_json::nlohmann_json )

@@ -3,10 +3,13 @@ name: Mainline CI
 on: [push]
 
 jobs:
-  build:
+  Build-Docker-Images:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - name: Prepare Environment
+      run: git submodule update --init --recursive
+
     - name: Build Miner Docker Image
       run: docker build bookchain-miner -t bookchain-miner:latest
 

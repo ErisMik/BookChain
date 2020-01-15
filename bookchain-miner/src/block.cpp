@@ -10,7 +10,15 @@ Bloock::Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight) 
     strcpy(this->_block.seedHash, seedHash.c_str());
     this->_block.blockHeight = blockHeight;
     this->_block.nonce = 0;
-    strcpy(this->_block.data, "i");
+}
+
+Bloock::Bloock(Block block) {
+    this->_block = {};
+    this->_block = block;
+}
+
+Block Bloock::block() {
+    return this->_block;
 }
 
 std::string Bloock::blockHash() {
@@ -41,6 +49,18 @@ void Bloock::setNonce(int64_t newNonce) {
     this->_block.nonce = newNonce;
 }
 
+std::string Bloock::signature() {
+    return this->_block.signature;
+}
+
+void Bloock::sign(std::string privateKey) {
+    // TODO: Eric Mikulin, 2020-01-13
+}
+
 std::string Bloock::data() {
     return this->_block.data;
+}
+
+void Bloock::writeData(std::string newData) {
+    strcpy(this->_block.data, newData.c_str());
 }

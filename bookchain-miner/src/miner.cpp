@@ -1,4 +1,5 @@
 #include "block.hpp"
+#include "utils.hpp"
 #include <iostream>
 
 int main() {
@@ -6,6 +7,9 @@ int main() {
     std::cout << "Creating new bloock" << std::endl;
 
     Bloock testBloock("i", "i", 12);
-    std::cout << testBloock.blockHash() << std::endl;
-    std::cout << testBloock.blockHash() << std::endl;
+    testBloock.writeData("i");
+    std::cout << utils::hexifystring(testBloock.blockHash()) << std::endl;
+
+    Bloock testBloockTwo(testBloock.block());
+    std::cout << utils::hexifystring(testBloockTwo.blockHash()) << std::endl;
 }

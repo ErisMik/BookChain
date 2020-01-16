@@ -12,8 +12,8 @@ Bloock::Bloock() {
 
 Bloock::Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight) {
     this->_block = {};
-    strcpy(this->_block.prevHash, prevHash.c_str());
-    strcpy(this->_block.seedHash, seedHash.c_str());
+    memcpy(this->_block.prevHash, prevHash.c_str(), hashLength);
+    memcpy(this->_block.seedHash, seedHash.c_str(), hashLength);
     this->_block.blockHeight = blockHeight;
     this->_block.nonce = 0;
 }
@@ -32,7 +32,7 @@ std::string Bloock::blockHash() {
 }
 
 std::string Bloock::prevHash() {
-    return this->_block.prevHash;
+    return {this->_block.prevHash, hashLength};
 }
 
 std::string Bloock::seedHash() {

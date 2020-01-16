@@ -12,9 +12,11 @@ int main() {
     Bloock testBloock("i", "i", 0);
     testBloock.writeData("i");
     std::cout << utils::hexifystring(testBloock.blockHash()) << std::endl;
+    std::cout << utils::hexifystring(testBloock.prevHash()) << std::endl;
 
     Bloock testBloockTwo(testBloock.block());
     std::cout << utils::hexifystring(testBloockTwo.blockHash()) << std::endl;
+    std::cout << utils::hexifystring(testBloockTwo.prevHash()) << std::endl;
 
     std::vector<Bloock> bloockChain;
     bloockChain.push_back(testBloock);
@@ -25,5 +27,5 @@ int main() {
         bloockChain.push_back(newBloock);
     }
 
-    verifyChain(bloockChain);
+    std::cout << verifyChain(bloockChain) << std::endl;
 }

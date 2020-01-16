@@ -1,17 +1,19 @@
 #pragma once
 #include <string>
 
+constexpr size_t hashLength = 20;
+constexpr size_t hashBufferLength = hashLength + 1;  // Saving room for the null byte
 constexpr size_t megabyte = 1 * 1024 * 1024;
 
 namespace bookchain {
 
 struct Block {
-    char prevHash[20];
-    char seedHash[20];
+    char prevHash[hashBufferLength];
+    char seedHash[hashBufferLength];
     int64_t blockHeight;
     int64_t nonce;
 
-    char signature[20];
+    char signature[hashBufferLength];
     char data[megabyte];
 };
 

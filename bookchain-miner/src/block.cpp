@@ -1,8 +1,14 @@
 #include "block.hpp"
+#include "crypto.hpp"
 #include <cstring>
 #include <iostream>
-#include <openssl/sha.h>
 #include <string>
+
+namespace bookchain {
+
+Bloock::Bloock() {
+    this->_block = {};
+}
 
 Bloock::Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight) {
     this->_block = {};
@@ -22,11 +28,7 @@ Block Bloock::block() {
 }
 
 std::string Bloock::blockHash() {
-    size_t hashLength = 20;
-    unsigned char hash[hashLength];
-
-    SHA1(reinterpret_cast<unsigned char*>(&this->_block), sizeof(this->_block), hash);
-    return std::string(hash, hash + sizeof(hash) / sizeof(hash[0]));
+    return hash(&this->_block, sizeof(this->_block));
 }
 
 std::string Bloock::prevHash() {
@@ -64,3 +66,5 @@ std::string Bloock::data() {
 void Bloock::writeData(std::string newData) {
     strcpy(this->_block.data, newData.c_str());
 }
+
+} // namespace bookchain

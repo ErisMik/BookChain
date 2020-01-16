@@ -3,18 +3,21 @@
 
 constexpr size_t megabyte = 1 * 1024 * 1024;
 
+namespace bookchain {
+
 struct Block {
-    char prevHash [20];
-    char seedHash [20];
+    char prevHash[20];
+    char seedHash[20];
     int64_t blockHeight;
     int64_t nonce;
 
-    char signature [20];
-    char data [megabyte];
+    char signature[20];
+    char data[megabyte];
 };
 
 class Bloock {
 public:
+    Bloock();
     Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight);
     Bloock(Block block);
 
@@ -38,3 +41,5 @@ private:
     Block _block;
     std::string _blockHash;
 };
+
+} // namespace bookchain

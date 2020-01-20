@@ -9,5 +9,7 @@ BreakBeforeBraces: Attach
 BreakConstructorInitializers: AfterColon
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 Cpp11BracedListStyle: true
+NamespaceIndentation: None
+SpacesBeforeTrailingComments: 2
 TabWidth: 4
 ...

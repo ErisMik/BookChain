@@ -1,28 +1,38 @@
 #include "block.hpp"
+#include "crypto.hpp"
 #include <cstring>
 #include <iostream>
-#include <openssl/sha.h>
 #include <string>
+
+namespace bookchain {
+
+Bloock::Bloock() {
+    this->_block = {};
+}
 
 Bloock::Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight) {
     this->_block = {};
-    strcpy(this->_block.prevHash, prevHash.c_str());
-    strcpy(this->_block.seedHash, seedHash.c_str());
+    memcpy(this->_block.prevHash, prevHash.c_str(), hashLength);
+    memcpy(this->_block.seedHash, seedHash.c_str(), hashLength);
     this->_block.blockHeight = blockHeight;
     this->_block.nonce = 0;
-    strcpy(this->_block.data, "i");
+}
+
+Bloock::Bloock(Block block) {
+    this->_block = {};
+    this->_block = block;
+}
+
+Block Bloock::block() {
+    return this->_block;
 }
 
 std::string Bloock::blockHash() {
-    size_t hashLength = 20;
-    unsigned char hash[hashLength];
-
-    SHA1(reinterpret_cast<unsigned char*>(&this->_block), sizeof(this->_block), hash);
-    return std::string(hash, hash + sizeof(hash) / sizeof(hash[0]));
+    return hash(&this->_block, sizeof(this->_block));
 }
 
 std::string Bloock::prevHash() {
-    return this->_block.prevHash;
+    return {this->_block.prevHash, hashLength};
 }
 
 std::string Bloock::seedHash() {
@@ -41,6 +51,20 @@ void Bloock::setNonce(int64_t newNonce) {
     this->_block.nonce = newNonce;
 }
 
+std::string Bloock::signature() {
+    return this->_block.signature;
+}
+
+void Bloock::sign(std::string privateKey) {
+    // TODO: Eric Mikulin, 2020-01-13
+}
+
 std::string Bloock::data() {
     return this->_block.data;
 }
+
+void Bloock::writeData(std::string newData) {
+    strcpy(this->_block.data, newData.c_str());
+}
+
+}  // namespace bookchain

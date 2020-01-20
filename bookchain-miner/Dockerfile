@@ -21,7 +21,7 @@ FROM debian:buster-slim AS run
 RUN mkdir -p /bookchain/miner
 WORKDIR /bookchain/miner
 
-RUN apt-get update -y && apt-get install -y libboost-dev libssl-dev
+RUN apt-get update -y && apt-get install -y libboost-dev libssl-dev gdb
 
 COPY --from=build /bookchain/build/build/miner ./
 

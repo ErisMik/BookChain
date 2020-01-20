@@ -33,18 +33,4 @@ std::vector<Bloock> getFullChain(std::string filename) {
     return bloockChain;
 }
 
-// std::vector<Bloock> getBlockByHeight(std::string filename) {
-//     std::ifstream blockchainFile(filename, std::ios::binary);
-//     std::vector<Bloock> bloockChain;
-
-//     while (!blockchainFile) {
-//         Bloock bloock;
-//         blockchainFile.read(reinterpret_cast<char*>(&bloock), sizeof(bloock));
-//         bloockChain.push_back(bloock);
-//     }
-
-//     blockchainFile.close();
-//     return bloockChain;
-// }
-
 }  // namespace bookchain

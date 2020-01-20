@@ -11,4 +11,4 @@ std::string hash(void* data, size_t dataLen) {
     return std::string(hash, hash + sizeof(hash) / sizeof(hash[0]));
 }
 
-} // namespace bookchain
+}  // namespace bookchain

@@ -5,4 +5,4 @@ namespace bookchain {
 
 std::string hash(void* data, size_t dataLen);
 
-} // namespace bookchain
+}  // namespace bookchain

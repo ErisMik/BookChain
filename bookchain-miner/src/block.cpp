@@ -67,4 +67,4 @@ void Bloock::writeData(std::string newData) {
     strcpy(this->_block.data, newData.c_str());
 }
 
-} // namespace bookchain
+}  // namespace bookchain

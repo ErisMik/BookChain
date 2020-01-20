@@ -14,7 +14,7 @@ add_subdirectory( thirdparty/nlohmann_json )
 
 
 # Main miner executable
-add_executable( miner  miner.cpp block.cpp utils.cpp crypto.cpp chain.cpp)
+add_executable( miner  miner.cpp block.cpp utils.cpp crypto.cpp chain.cpp storage.cpp)
 target_compile_options( miner PUBLIC "-Wall" )
 
 target_include_directories( miner PUBLIC "${CMAKE_SOURCE_DIR}" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )

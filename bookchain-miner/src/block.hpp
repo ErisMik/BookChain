@@ -41,7 +41,7 @@ public:
 
 private:
     Block _block;
-    std::string _blockHash;
+    // std::string _blockHash;
 };
 
-} // namespace bookchain
+}  // namespace bookchain

@@ -6,5 +6,5 @@ namespace utils {
 
 std::string hexifystring(std::string data);
 
-} // namespace utils
-} // namespace bookchain
+}  // namespace utils
+}  // namespace bookchain

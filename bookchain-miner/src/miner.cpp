@@ -1,5 +1,6 @@
 #include "block.hpp"
 #include "chain.hpp"
+#include "storage.hpp"
 #include "utils.hpp"
 #include <iostream>
 
@@ -27,5 +28,13 @@ int main() {
         bloockChain.push_back(newBloock);
     }
 
-    std::cout << verifyChain(bloockChain) << std::endl;
+    saveChain(bloockChain);
+
+    std::cout << verifyChain(bloockChain) << " " << bloockChain.size() << " " << sizeof(Bloock) << std::endl;
+
+    std::vector<Bloock> bloockChain2 = getFullChain();
+
+    std::cout << verifyChain(bloockChain2) << std::endl;
+
+    std::cout << bloockChain.size() << " " << bloockChain2.size() << std::endl;
 }

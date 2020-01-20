@@ -16,5 +16,5 @@ std::string hexifystring(std::string data) {
     return ss.str();
 }
 
-} // namespace utils
-} // namespace bookchain
+}  // namespace utils
+}  // namespace bookchain

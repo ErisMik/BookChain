@@ -10,6 +10,7 @@ RUN apt-get update -y && apt-get install -y git build-essential cmake clang-tidy
 RUN apt-get update -y && apt-get install -y libboost-dev libboost-test-dev libssl-dev libzmq5-dev
 RUN bash -c "git clone git://github.com/zeromq/zmqpp.git && \
              cd zmqpp && \
+             git checkout 4.2.0 && \
              make -j8 && \
              make check && \
              make install && \

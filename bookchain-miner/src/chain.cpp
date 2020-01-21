@@ -31,6 +31,12 @@ bool verifyPair(Bloock lowerBloock, Bloock upperBloock) {
 
     // TODO: Check difficulty
 
+    // Check that heights are valid
+    if (upperBloock.blockHeight() - lowerBloock.blockHeight() != 1) {
+        isValid = false;
+    }
+
+    // Check that hashes are valid
     if (upperBloock.prevHash() != lowerBloock.blockHash()) {
         isValid = false;
     }

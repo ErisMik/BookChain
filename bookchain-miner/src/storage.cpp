@@ -33,4 +33,25 @@ std::vector<Bloock> getFullChain(std::string filename) {
     return bloockChain;
 }
 
+Bloock getBlockByHeight(unsigned int blockHeight, std::string filename) {
+    std::ifstream blockchainFile(filename, std::ios::in | std::ios::binary);
+    std::vector<Bloock> bloockChain;
+
+    if (blockchainFile.fail()) {
+        std::cout << "This is the darkest timeline" << std::endl;
+    }
+    blockchainFile.seekg(0);
+
+    Bloock bloock = {};
+    blockchainFile.seekg(blockHeight * sizeof(bloock));
+    blockchainFile.read(reinterpret_cast<char*>(&bloock), sizeof(bloock));
+
+    // Verify
+    if (bloock.blockHeight() != blockHeight) {
+        std::cout << "Unable to find correct block" << std::endl;
+    }
+
+    return bloock;
+}
+
 }  // namespace bookchain

@@ -21,7 +21,7 @@ class Bloock {
 public:
     Bloock();
     Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight);
-    Bloock(Block block);
+    explicit Bloock(const Block& block);
 
     Block block();
     std::string blockHash();

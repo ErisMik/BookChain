@@ -40,5 +40,4 @@ int main() {
 
     Bloock fifthBlock = getBlockByHeight(5u);
     std::cout << utils::hexifystring(fifthBlock.blockHash()) << std::endl;
-
 }

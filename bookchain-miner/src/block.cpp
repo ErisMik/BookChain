@@ -18,7 +18,7 @@ Bloock::Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight) 
     this->_block.nonce = 0;
 }
 
-Bloock::Bloock(Block block) {
+Bloock::Bloock(const Block& block) {
     this->_block = {};
     this->_block = block;
 }

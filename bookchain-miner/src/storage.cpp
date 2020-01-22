@@ -35,7 +35,6 @@ std::vector<Bloock> getFullChain(std::string filename) {
 
 Bloock getBlockByHeight(unsigned int blockHeight, std::string filename) {
     std::ifstream blockchainFile(filename, std::ios::in | std::ios::binary);
-    std::vector<Bloock> bloockChain;
 
     if (blockchainFile.fail()) {
         std::cout << "This is the darkest timeline" << std::endl;

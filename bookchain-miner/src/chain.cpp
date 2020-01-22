@@ -4,7 +4,7 @@
 
 namespace bookchain {
 
-bool verifyChain(std::vector<Bloock>& bloockChain) {
+bool verifyChain(const std::vector<Bloock>& bloockChain) {
     Bloock prevBloock;
 
     bool isValid = true;

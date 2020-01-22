@@ -56,7 +56,7 @@ std::string Bloock::signature() {
 }
 
 void Bloock::sign(std::string privateKey) {
-    // TODO: Eric Mikulin, 2020-01-13
+    // TODO(Eric Mikulin): 2020-01-13
 }
 
 std::string Bloock::data() {

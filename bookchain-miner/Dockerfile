@@ -10,8 +10,9 @@ RUN apt-get update -y && apt-get install -y git build-essential cmake clang-tidy
 RUN apt-get update -y && apt-get install -y libboost-dev libboost-test-dev libssl-dev libzmq5-dev libzmqpp-dev
 
 RUN mkdir -p /bookchain/build/build
-
-COPY src/ ./
+COPY thirdparty/ ./thirdparty
+COPY CMakeLists.txt ./
+COPY src/ ./src
 
 WORKDIR /bookchain/build/build
 RUN cmake ../ && make -j8

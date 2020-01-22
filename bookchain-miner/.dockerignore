@@ -1,4 +1,6 @@
-Dockerfile
 .dockerignore
-src/thirdparty/nlohmann_json/benchmarks
-src/thirdparty/nlohmann_json/test
+build/
+Dockerfile
+thirdparty/nlohmann_json/benchmarks
+thirdparty/nlohmann_json/test
+tools/

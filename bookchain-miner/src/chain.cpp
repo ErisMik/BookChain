@@ -10,7 +10,7 @@ bool verifyChain(const std::vector<Bloock>& bloockChain) {
     bool isValid = true;
 
     for (auto& bloock : bloockChain) {
-        if (prevBloock.nonce() != 0) {  // TODO: Eric Mikulin, 2020-01-14, Find a better way to skip the first block
+        if (prevBloock.nonce() != 0) {  // TODO(Eric Mikulin): 2020-01-14, Find a better way to skip the first block
             // std::cout << utils::hexifystring(bloock.blockHash()) << " ";
             // std::cout << utils::hexifystring(bloock.prevHash()) << " ";
             // std::cout << utils::hexifystring(prevBloock.blockHash()) << std::endl;
@@ -29,7 +29,7 @@ bool verifyChain(const std::vector<Bloock>& bloockChain) {
 bool verifyPair(Bloock lowerBloock, Bloock upperBloock) {
     bool isValid = true;
 
-    // TODO: Check difficulty
+    // TODO(Eric Mikulin): Check difficulty
 
     // Check that heights are valid
     if (upperBloock.blockHeight() - lowerBloock.blockHeight() != 1) {

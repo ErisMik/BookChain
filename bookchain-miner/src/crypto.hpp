@@ -3,6 +3,6 @@
 
 namespace bookchain {
 
-std::string hash(void* data, size_t dataLen);
+std::string hash(void* data, size_t dataLength);
 
 }  // namespace bookchain

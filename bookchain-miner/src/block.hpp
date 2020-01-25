@@ -21,7 +21,7 @@ class Bloock {
 public:
     Bloock();
     Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight);
-    Bloock(Block block);
+    explicit Bloock(const Block& block);
 
     Block block();
     std::string blockHash();
@@ -41,7 +41,7 @@ public:
 
 private:
     Block _block;
-    // std::string _blockHash;
+    char _blockHash[hashBufferLength];
 };
 
 }  // namespace bookchain

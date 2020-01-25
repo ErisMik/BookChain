@@ -37,4 +37,7 @@ int main() {
     std::cout << verifyChain(bloockChain2) << std::endl;
 
     std::cout << bloockChain.size() << " " << bloockChain2.size() << std::endl;
+
+    Bloock fifthBlock = getBlockByHeight(5u);
+    std::cout << utils::hexifystring(fifthBlock.blockHash()) << std::endl;
 }

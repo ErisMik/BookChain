@@ -9,13 +9,16 @@ WORKDIR /bookchain/build
 RUN apt-get update -y && apt-get install -y git build-essential cmake
 RUN apt-get update -y && apt-get install -y libboost-dev libboost-test-dev libssl-dev libzmq5-dev libzmqpp-dev
 
+ARG CMAKE_ARGS=""
+
 RUN mkdir -p /bookchain/build/build
 COPY thirdparty/ ./thirdparty
 COPY CMakeLists.txt ./
+COPY test/ ./test
 COPY src/ ./src
 
 WORKDIR /bookchain/build/build
-RUN cmake ../ && make -j8
+RUN cmake ${CMAKE_ARGS} ../ && make -j8
 
 
 ## Runtime image

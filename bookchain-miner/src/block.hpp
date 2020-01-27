@@ -3,7 +3,7 @@
 
 constexpr size_t hashLength = 20;
 constexpr size_t hashBufferLength = hashLength + 1;  // Saving room for the null byte
-constexpr size_t megabyte = 1 * 1024 * 1024;
+constexpr size_t blockDataLength = 1 * 1024 * 1024;  // 1 megabyte
 
 namespace bookchain {
 
@@ -14,13 +14,13 @@ struct Block {
     int64_t nonce;
 
     char signature[hashBufferLength];
-    char data[megabyte];
+    char data[blockDataLength];
 };
 
 class Bloock {
 public:
     Bloock();
-    Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight);
+    Bloock(const std::string& prevHash, const std::string& seedHash, int64_t blockHeight);
     explicit Bloock(const Block& block);
 
     Block block();
@@ -34,10 +34,10 @@ public:
     void setNonce(int64_t newNonce);
 
     std::string signature();
-    void sign(std::string privateKey);
+    void sign(const std::string& privateKey);
 
     std::string data();
-    void writeData(std::string newData);
+    void writeData(const std::string& newData);
 
 private:
     Block _block;

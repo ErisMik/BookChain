@@ -6,20 +6,20 @@
 
 namespace bookchain {
 
-Bloock::Bloock() {
-    this->_block = {};
+Bloock::Bloock() :
+    _block({}), _blockHash("") {
 }
 
-Bloock::Bloock(std::string prevHash, std::string seedHash, int64_t blockHeight) {
-    this->_block = {};
-    memcpy(this->_block.prevHash, prevHash.c_str(), hashLength);
-    memcpy(this->_block.seedHash, seedHash.c_str(), hashLength);
+Bloock::Bloock(const std::string& prevHash, const std::string& seedHash, int64_t blockHeight) :
+    Bloock() {
+    memcpy(&this->_block.prevHash[0], prevHash.c_str(), hashLength);
+    memcpy(&this->_block.seedHash[0], seedHash.c_str(), hashLength);
     this->_block.blockHeight = blockHeight;
     this->_block.nonce = 0;
 }
 
-Bloock::Bloock(const Block& block) {
-    this->_block = {};
+Bloock::Bloock(const Block& block) :
+    Bloock() {
     this->_block = block;
 }
 
@@ -32,11 +32,11 @@ std::string Bloock::blockHash() {
 }
 
 std::string Bloock::prevHash() {
-    return {this->_block.prevHash, hashLength};
+    return {&this->_block.prevHash[0], hashLength};
 }
 
 std::string Bloock::seedHash() {
-    return this->_block.seedHash;
+    return {&this->_block.seedHash[0], hashLength};
 }
 
 int64_t Bloock::blockHeight() {
@@ -52,19 +52,19 @@ void Bloock::setNonce(int64_t newNonce) {
 }
 
 std::string Bloock::signature() {
-    return this->_block.signature;
+    return {&this->_block.signature[0], hashLength};
 }
 
-void Bloock::sign(std::string privateKey) {
+void Bloock::sign(const std::string& /*privateKey*/) {
     // TODO(Eric Mikulin): 2020-01-13
 }
 
 std::string Bloock::data() {
-    return this->_block.data;
+    return {&this->_block.data[0], blockDataLength};
 }
 
-void Bloock::writeData(std::string newData) {
-    strcpy(this->_block.data, newData.c_str());
+void Bloock::writeData(const std::string& newData) {
+    strncpy(&this->_block.data[0], newData.c_str(), blockDataLength);
 }
 
 }  // namespace bookchain

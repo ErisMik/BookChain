@@ -6,17 +6,17 @@
 
 namespace bookchain {
 
-void saveChain(std::vector<Bloock> bloockChain, std::string filename) {
+void saveChain(std::vector<Bloock> bloockChain, const std::string& filename) {
     std::ofstream blockchainFile(filename, std::ios::out | std::ios::binary);
 
-    for (size_t i = 0; i < bloockChain.size(); ++i) {
-        blockchainFile.write(reinterpret_cast<char*>(&bloockChain[i]), sizeof(bloockChain[i]));
+    for (auto& bloock : bloockChain) {
+        blockchainFile.write(reinterpret_cast<char*>(&bloock), sizeof(bloock));  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
     }
 
     blockchainFile.close();
 }
 
-std::vector<Bloock> getFullChain(std::string filename) {
+std::vector<Bloock> getFullChain(const std::string& filename) {
     std::ifstream blockchainFile(filename, std::ios::in | std::ios::binary);
     std::vector<Bloock> bloockChain;
 
@@ -26,14 +26,14 @@ std::vector<Bloock> getFullChain(std::string filename) {
     blockchainFile.seekg(0);
 
     Bloock bloock = {};
-    while (blockchainFile.read(reinterpret_cast<char*>(&bloock), sizeof(bloock))) {
+    while (blockchainFile.read(reinterpret_cast<char*>(&bloock), sizeof(bloock))) {  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
         bloockChain.push_back(bloock);
     }
 
     return bloockChain;
 }
 
-Bloock getBlockByHeight(unsigned int blockHeight, std::string filename) {
+Bloock getBlockByHeight(unsigned int blockHeight, const std::string& filename) {
     std::ifstream blockchainFile(filename, std::ios::in | std::ios::binary);
 
     if (blockchainFile.fail()) {
@@ -43,7 +43,7 @@ Bloock getBlockByHeight(unsigned int blockHeight, std::string filename) {
 
     Bloock bloock = {};
     blockchainFile.seekg(blockHeight * sizeof(bloock));
-    blockchainFile.read(reinterpret_cast<char*>(&bloock), sizeof(bloock));
+    blockchainFile.read(reinterpret_cast<char*>(&bloock), sizeof(bloock));  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
 
     // Verify
     if (bloock.blockHeight() != blockHeight) {

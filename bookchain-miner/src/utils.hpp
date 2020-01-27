@@ -4,7 +4,7 @@
 namespace bookchain {
 namespace utils {
 
-std::string hexifystring(std::string data);
+std::string hexifystring(const std::string& data);
 
 }  // namespace utils
 }  // namespace bookchain

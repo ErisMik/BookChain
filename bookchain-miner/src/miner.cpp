@@ -4,40 +4,40 @@
 #include "utils.hpp"
 #include <iostream>
 
-int main() {
-    using namespace bookchain;
-
+int main(int /*argc*/, const char* /*argv*/[]) {
     std::cout << "Hello world!" << std::endl;
     std::cout << "Creating new bloock" << std::endl;
 
-    Bloock testBloock("i", "i", 0);
+    bookchain::Bloock testBloock("i", "i", 0);
     testBloock.writeData("i");
-    std::cout << utils::hexifystring(testBloock.blockHash()) << std::endl;
-    std::cout << utils::hexifystring(testBloock.prevHash()) << std::endl;
+    std::cout << bookchain::utils::hexifystring(testBloock.blockHash()) << std::endl;
+    std::cout << bookchain::utils::hexifystring(testBloock.prevHash()) << std::endl;
 
-    Bloock testBloockTwo(testBloock.block());
-    std::cout << utils::hexifystring(testBloockTwo.blockHash()) << std::endl;
-    std::cout << utils::hexifystring(testBloockTwo.prevHash()) << std::endl;
+    bookchain::Bloock testBloockTwo(testBloock.block());
+    std::cout << bookchain::utils::hexifystring(testBloockTwo.blockHash()) << std::endl;
+    std::cout << bookchain::utils::hexifystring(testBloockTwo.prevHash()) << std::endl;
 
-    std::vector<Bloock> bloockChain;
+    std::vector<bookchain::Bloock> bloockChain;
     bloockChain.push_back(testBloock);
 
-    for (int i = 1; i < 100; ++i) {
-        Bloock newBloock(bloockChain.back().blockHash(), "i", i);
+    constexpr int testBlockChainLength = 100;
+    for (int i = 1; i < testBlockChainLength; ++i) {
+        bookchain::Bloock newBloock(bloockChain.back().blockHash(), "i", i);
         newBloock.setNonce(i);
         bloockChain.push_back(newBloock);
     }
 
-    saveChain(bloockChain);
+    bookchain::saveChain(bloockChain);
 
-    std::cout << verifyChain(bloockChain) << " " << bloockChain.size() << " " << sizeof(Bloock) << std::endl;
+    std::cout << bookchain::verifyChain(bloockChain) << " " << bloockChain.size() << " " << sizeof(bookchain::Bloock) << std::endl;
 
-    std::vector<Bloock> bloockChain2 = getFullChain();
+    std::vector<bookchain::Bloock> bloockChain2 = bookchain::getFullChain();
 
-    std::cout << verifyChain(bloockChain2) << std::endl;
+    std::cout << bookchain::verifyChain(bloockChain2) << std::endl;
 
     std::cout << bloockChain.size() << " " << bloockChain2.size() << std::endl;
 
-    Bloock fifthBlock = getBlockByHeight(5u);
-    std::cout << utils::hexifystring(fifthBlock.blockHash()) << std::endl;
+    constexpr unsigned int testBlockHeight = 5U;
+    bookchain::Bloock fifthBlock = bookchain::getBlockByHeight(testBlockHeight);
+    std::cout << bookchain::utils::hexifystring(fifthBlock.blockHash()) << std::endl;
 }

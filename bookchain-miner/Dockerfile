@@ -6,7 +6,7 @@ FROM ubuntu:bionic AS build
 RUN mkdir -p /bookchain/build
 WORKDIR /bookchain/build
 
-RUN apt-get update -y && apt-get install -y git build-essential cmake clang-tidy
+RUN apt-get update -y && apt-get install -y git build-essential cmake
 RUN apt-get update -y && apt-get install -y libboost-dev libboost-test-dev libssl-dev libzmq5-dev libzmqpp-dev
 
 RUN mkdir -p /bookchain/build/build

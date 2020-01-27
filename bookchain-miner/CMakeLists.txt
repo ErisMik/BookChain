@@ -21,10 +21,10 @@ add_subdirectory( thirdparty/nlohmann_json )
 
 # Libbookchain
 set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/storage.cpp )
-add_library( libbookchain SHARED ${LIBBOOKCHAIN_SOURCES} )
-target_compile_options( libbookchain PUBLIC "-Wall" )
-target_include_directories( libbookchain PUBLIC "src/" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )
-target_link_libraries( libbookchain PUBLIC pthread crypto PRIVATE nlohmann_json::nlohmann_json )
+add_library( bookchain SHARED ${LIBBOOKCHAIN_SOURCES} )
+target_compile_options( bookchain PUBLIC "-Wall" )
+target_include_directories( bookchain PUBLIC "src/" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )
+target_link_libraries( bookchain PUBLIC pthread crypto PRIVATE nlohmann_json::nlohmann_json )
 
 
 # Main miner executable
@@ -32,16 +32,16 @@ set( MINER_SOURCES src/miner.cpp )
 add_executable( miner ${MINER_SOURCES} )
 target_compile_options( miner PUBLIC "-Wall" )
 target_include_directories( miner PUBLIC "src/" )
-target_link_libraries( miner PUBLIC libbookchain )
+target_link_libraries( miner PUBLIC bookchain )
 
 
 # Build tests
 if ( ENABLE_MINER_TESTS )
     enable_testing()
-    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp )
+    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chain.cpp )
     add_executable( test_bookchain ${TEST_BOOKCHAIN_SOURCES} )
     target_include_directories( test_bookchain SYSTEM PRIVATE "thirdparty/catch/" "src/" )
-    target_link_libraries( test_bookchain PUBLIC libbookchain )
+    target_link_libraries( test_bookchain PUBLIC bookchain )
 
     add_test( libbookchain test_bookchain )
 endif()
@@ -49,7 +49,7 @@ endif()
 
 # Use clang-tidy as a sanity checker for miner and test
 if ( ENABLE_CLANG_TIDY_CHECK AND CLANG_TIDY_EXE )
-    set_target_properties( libbookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
+    set_target_properties( bookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
     set_target_properties( miner PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
     set_target_properties( test_bookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
 endif()

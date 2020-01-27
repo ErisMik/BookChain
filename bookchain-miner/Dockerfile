@@ -26,6 +26,7 @@ WORKDIR /bookchain/miner
 RUN apt-get update -y && apt-get install -y gdb
 RUN apt-get update -y && apt-get install -y libboost-dev libssl-dev libzmq5
 
-COPY --from=build /bookchain/build/build/miner ./
+ENV LD_LIBRARY_PATH /bookchain/miner
+COPY --from=build /bookchain/build/build/miner /bookchain/build/build/libbookchain.so ./
 
 CMD ["./miner"]

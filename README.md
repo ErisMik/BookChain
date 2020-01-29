@@ -1,3 +1,4 @@
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/ErisMik/BookChain.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/ErisMik/BookChain/alerts/)
 [![logo](https://raw.githubusercontent.com/ErisMik/BookChain/master/bookchainlogo.png)](https://github.com/ErisMik/BookChain)
 
 # BookChain

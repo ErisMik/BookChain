@@ -24,17 +24,17 @@ find_package( oatpp 1.0.0 REQUIRED )
 
 
 # Libbookchain
-set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/storage.cpp )
-add_library( bookchain SHARED ${LIBBOOKCHAIN_SOURCES} )
-target_compile_options( bookchain PUBLIC "-Wall" )
+set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/storage.cpp src/http/server.cpp )
+add_library( bookchain STATIC ${LIBBOOKCHAIN_SOURCES} )
+target_compile_options( bookchain PUBLIC "-Wall" "-Wextra" "-Wpedantic" )
 target_include_directories( bookchain PUBLIC "src/" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )
-target_link_libraries( bookchain PUBLIC pthread crypto PRIVATE oatpp::oatpp nlohmann_json::nlohmann_json )
+target_link_libraries( bookchain PUBLIC pthread crypto oatpp::oatpp nlohmann_json::nlohmann_json )
 
 
 # Main exectuable
 set( MINER_SOURCES src/main.cpp )
 add_executable( miner ${MINER_SOURCES} )
-target_compile_options( miner PUBLIC "-Wall" )
+target_compile_options( miner PUBLIC "-Wall" "-Wextra" "-Wpedantic" )
 target_include_directories( miner PUBLIC "src/" )
 target_link_libraries( miner PUBLIC bookchain )
 

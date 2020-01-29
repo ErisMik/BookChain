@@ -1,5 +1,6 @@
 #include "block.hpp"
 #include "chain.hpp"
+#include "http/server.hpp"
 #include "storage.hpp"
 #include "utils.hpp"
 #include <iostream>
@@ -40,4 +41,6 @@ int main(int /*argc*/, const char* /*argv*/[]) {
     constexpr unsigned int testBlockHeight = 5U;
     bookchain::Bloock fifthBlock = bookchain::getBlockByHeight(testBlockHeight);
     std::cout << bookchain::utils::hexifystring(fifthBlock.blockHash()) << std::endl;
+
+    bookchain::http::startMinerHttpServer();
 }

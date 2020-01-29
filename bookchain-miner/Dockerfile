@@ -10,9 +10,9 @@ RUN apt-get update -y && apt-get install -y git build-essential cmake
 RUN apt-get update -y && apt-get install -y libboost-dev libboost-test-dev libssl-dev libzmq5-dev libzmqpp-dev
 RUN bash -c "git clone https://github.com/oatpp/oatpp.git && \
              cd oatpp && \
-	     mkdir build && cd build && \
-	     cmake ../ && \
-	     make -j8 && make install"
+             mkdir build && cd build && \
+             cmake ../ && \
+             make -j8 && make install"
 
 ARG CMAKE_ARGS=""
 

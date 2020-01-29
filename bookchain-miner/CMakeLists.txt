@@ -13,10 +13,14 @@ else()
 endif()
 
 
-# JSON library dependency
+# NLohmann JSON dependency
 set( JSON_BuildTests OFF CACHE INTERNAL "" )
 set( JSON_Install OFF CACHE INTERNAL "" )
 add_subdirectory( thirdparty/nlohmann_json )
+
+
+# Oat++ Dependency
+find_package( oatpp 1.0.0 REQUIRED )
 
 
 # Libbookchain
@@ -24,11 +28,11 @@ set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.c
 add_library( bookchain SHARED ${LIBBOOKCHAIN_SOURCES} )
 target_compile_options( bookchain PUBLIC "-Wall" )
 target_include_directories( bookchain PUBLIC "src/" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )
-target_link_libraries( bookchain PUBLIC pthread crypto PRIVATE nlohmann_json::nlohmann_json )
+target_link_libraries( bookchain PUBLIC pthread crypto PRIVATE oatpp::oatpp nlohmann_json::nlohmann_json )
 
 
-# Main miner executable
-set( MINER_SOURCES src/miner.cpp )
+# Main exectuable
+set( MINER_SOURCES src/main.cpp )
 add_executable( miner ${MINER_SOURCES} )
 target_compile_options( miner PUBLIC "-Wall" )
 target_include_directories( miner PUBLIC "src/" )

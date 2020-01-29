@@ -33,12 +33,12 @@ TEST_CASE("verifyChain returns false if chain has block with invalid hash", "[ch
         bookchain::Bloock newBloock;
         if (i == badBlockIndex) {
             newBloock = bookchain::Bloock("B A D H A S H", "B L O C K", i);
-        } else {            
+        } else {
             newBloock = bookchain::Bloock(bloockChain.back().blockHash(), "B L O C K", i);
         }
         newBloock.setNonce(i);
         bloockChain.push_back(newBloock);
-    }    
+    }
 
     REQUIRE(bookchain::verifyChain(bloockChain) == true);
 }
@@ -55,13 +55,13 @@ TEST_CASE("verifyChain returns false if chain has block with invalid height", "[
     for (int i = 1; i < testBloockChainLength; ++i) {
         bookchain::Bloock newBloock;
         if (i == badBlockIndex) {
-            newBloock = bookchain::Bloock(bloockChain.back().blockHash(), "B L O C K", i+1);
-        } else {            
+            newBloock = bookchain::Bloock(bloockChain.back().blockHash(), "B L O C K", i + 1);
+        } else {
             newBloock = bookchain::Bloock(bloockChain.back().blockHash(), "B L O C K", i);
         }
         newBloock.setNonce(i);
         bloockChain.push_back(newBloock);
-    }    
+    }
 
     REQUIRE(bookchain::verifyChain(bloockChain) == true);
 }

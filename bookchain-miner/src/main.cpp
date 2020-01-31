@@ -1,5 +1,6 @@
 #include "block.hpp"
 #include "chain.hpp"
+#include "chaintools.hpp"
 #include "http/server.hpp"
 #include "storage.hpp"
 #include "utils.hpp"
@@ -18,29 +19,29 @@ int main(int /*argc*/, const char* /*argv*/[]) {
     std::cout << bookchain::utils::hexifystring(testBloockTwo.blockHash()) << std::endl;
     std::cout << bookchain::utils::hexifystring(testBloockTwo.prevHash()) << std::endl;
 
-    std::vector<bookchain::Bloock> bloockChain;
-    bloockChain.push_back(testBloock);
+    bookchain::Bloockchain bloockchain;
+    bloockchain.purge();
+    bloockchain.append(testBloock);
 
-    constexpr int testBlockChainLength = 100;
-    for (int i = 1; i < testBlockChainLength; ++i) {
-        bookchain::Bloock newBloock(bloockChain.back().blockHash(), "i", i);
+    constexpr int testBloockchainLength = 100;
+    for (int i = 1; i < testBloockchainLength; ++i) {
+        bookchain::Bloock newBloock(bloockchain.latest().blockHash(), "i", i);
         newBloock.setNonce(i);
-        bloockChain.push_back(newBloock);
+        bloockchain.append(newBloock);
     }
 
-    bookchain::saveChain(bloockChain);
+    std::cout << bookchain::verifyChain(bloockchain) << " " << bloockchain.height() << " " << sizeof(bookchain::Bloock) << std::endl;
 
-    std::cout << bookchain::verifyChain(bloockChain) << " " << bloockChain.size() << " " << sizeof(bookchain::Bloock) << std::endl;
+    bookchain::Bloockchain bloockchain2;
 
-    std::vector<bookchain::Bloock> bloockChain2 = bookchain::getFullChain();
+    std::cout << bookchain::verifyChain(bloockchain2) << std::endl;
 
-    std::cout << bookchain::verifyChain(bloockChain2) << std::endl;
-
-    std::cout << bloockChain.size() << " " << bloockChain2.size() << std::endl;
+    std::cout << bloockchain.height() << " " << bloockchain2.height() << std::endl;
 
     constexpr unsigned int testBlockHeight = 5U;
-    bookchain::Bloock fifthBlock = bookchain::getBlockByHeight(testBlockHeight);
+    bookchain::Bloock fifthBlock = bookchain::storage::getBlockByHeight(testBlockHeight, &bookchain::bloockchainFilename[0]);
     std::cout << bookchain::utils::hexifystring(fifthBlock.blockHash()) << std::endl;
+    std::cout << bookchain::utils::hexifystring(bloockchain.bloock(testBlockHeight).blockHash()) << std::endl;
 
     bookchain::http::startMinerHttpServer();
 }

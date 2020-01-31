@@ -24,7 +24,7 @@ find_package( oatpp 1.0.0 REQUIRED )
 
 
 # Libbookchain
-set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/storage.cpp src/peers.cpp src/http/server.cpp )
+set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/chaintools.cpp src/storage.cpp src/peers.cpp src/http/server.cpp )
 add_library( bookchain STATIC ${LIBBOOKCHAIN_SOURCES} )
 target_compile_options( bookchain PUBLIC "-Wall" "-Wextra" "-Wpedantic" )
 target_include_directories( bookchain PUBLIC "src/" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )
@@ -42,7 +42,7 @@ target_link_libraries( miner PUBLIC bookchain )
 # Build tests
 if ( ENABLE_MINER_TESTS )
     enable_testing()
-    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chain.cpp )
+    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chaintools.cpp )
     add_executable( test_bookchain ${TEST_BOOKCHAIN_SOURCES} )
     target_include_directories( test_bookchain SYSTEM PRIVATE "thirdparty/catch/" "src/" )
     target_link_libraries( test_bookchain PUBLIC bookchain )

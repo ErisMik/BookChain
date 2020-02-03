@@ -6,13 +6,20 @@ FROM ubuntu:bionic AS build
 RUN mkdir -p /bookchain/build
 WORKDIR /bookchain/build
 
-RUN apt-get update -y && apt-get install -y git build-essential cmake
+RUN apt-get update -y && apt-get install -y build-essential git wget
+RUN apt-get update -y && apt-get install -y libssl-dev
+RUN bash -c "wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3.tar.gz && \
+             tar -xzf cmake-3.16.3.tar.gz && \
+	     cd cmake-3.16.3 && \
+	     ./bootstrap && \
+	     make -j$(nproc) && make install"
+
 RUN apt-get update -y && apt-get install -y libboost-dev libboost-test-dev libssl-dev libzmq5-dev libzmqpp-dev
 RUN bash -c "git clone https://github.com/oatpp/oatpp.git && \
              cd oatpp && \
              mkdir build && cd build && \
              cmake ../ && \
-             make -j8 && make install"
+             make -j$(nproc) && make install"
 
 ARG CMAKE_ARGS=""
 

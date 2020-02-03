@@ -1,7 +1,8 @@
-cmake_minimum_required( VERSION 3.10 )
+cmake_minimum_required( VERSION 3.11 )
 set( CMAKE_CXX_STANDARD 17 )
 project( bookchain_miner )
 
+include( FetchContent )
 
 # Find clang-tidy executable
 find_program( CLANG_TIDY_EXE NAMES "clang-tidy" )
@@ -20,8 +21,22 @@ add_subdirectory( thirdparty/nlohmann_json )
 
 
 # Oat++ Dependency
-find_package( oatpp 1.0.0 REQUIRED )
+find_package( oatpp 1.0.0 )
+if( NOT ${oatpp_FOUND} )
+  message( WARNING "Oatpp dependency not found, will be fetched and built as a part of this build" )
 
+  FetchContent_Declare( oatppcmake
+    GIT_REPOSITORY git@github.com:oatpp/oatpp.git
+    GIT_TAG 27c46444dbac6af79172b1600c7fcc99ff6df42b
+  )
+
+  FetchContent_GetProperties( oatppcmake )
+  if( NOT oatppcmake_POPULATED )
+    FetchContent_Populate( oatppcmake )
+    add_subdirectory( ${oatpp_SOURCE_DIR} ${oatpp_BINARY_DIR} )
+    add_library( oatpp::oatpp ALIAS oatpp )
+  endif()
+endif()
 
 # Libbookchain
 set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/chaintools.cpp src/storage.cpp src/peers.cpp src/http/server.cpp )

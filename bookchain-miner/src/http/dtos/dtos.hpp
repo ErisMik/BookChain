@@ -16,10 +16,17 @@ class BasicMessageDto : public oatpp::data::mapping::type::Object {
     DTO_FIELD(String, message);
 };
 
-class PeersListDto : public oatpp::data::mapping::type::Object {
-    DTO_INIT(PeersListDto, Object)
+class BlockDto : public oatpp::data::mapping::type::Object {
+    DTO_INIT(BlockDto, Object)
 
-    DTO_FIELD(Fields<List<BasicMessageDto::ObjectWrapper>::ObjectWrapper>::ObjectWrapper, peers);
+    DTO_FIELD(String, prevHash);
+    DTO_FIELD(String, seedHash);
+
+    DTO_FIELD(Int64, blockHeight);
+    DTO_FIELD(Int64, nonce);
+
+    DTO_FIELD(String, signature);
+    DTO_FIELD(String, data);
 };
 
 /* End DTO code-generation */

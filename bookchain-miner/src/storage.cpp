@@ -2,18 +2,25 @@
 #include "utils.hpp"
 #include <fstream>
 #include <iostream>
+#include <mutex>
 #include <vector>
 
 namespace bookchain::storage {
 
 constexpr size_t sizeofBloock = sizeof(Bloock);
 
+std::mutex bookchainStorageMutex;
+
 void purgeChain(const std::string& filename) {
+    std::lock_guard<std::mutex> guard(bookchainStorageMutex);
+
     std::ofstream blockchainFile(filename, std::ios::binary);
     blockchainFile.close();
 }
 
 void dumpChain(std::vector<Bloock> bloockChain, const std::string& filename) {
+    std::lock_guard<std::mutex> guard(bookchainStorageMutex);
+
     std::ofstream blockchainFile(filename, std::ios::binary);
 
     for (auto& bloock : bloockChain) {
@@ -24,6 +31,8 @@ void dumpChain(std::vector<Bloock> bloockChain, const std::string& filename) {
 }
 
 std::vector<Bloock> getChain(const std::string& filename) {
+    std::lock_guard<std::mutex> guard(bookchainStorageMutex);
+
     std::ifstream blockchainFile(filename, std::ios::binary);
     std::vector<Bloock> bloockChain;
 
@@ -42,6 +51,8 @@ std::vector<Bloock> getChain(const std::string& filename) {
 }
 
 void appendChain(Bloock bloock, const std::string& filename) {
+    std::lock_guard<std::mutex> guard(bookchainStorageMutex);
+
     std::ofstream blockchainFile(filename, std::ios::ate | std::ios::app | std::ios::binary);
 
     blockchainFile.write(reinterpret_cast<char*>(&bloock), sizeofBloock);  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
@@ -50,6 +61,8 @@ void appendChain(Bloock bloock, const std::string& filename) {
 }
 
 Bloock getBlockByHeight(unsigned int blockHeight, const std::string& filename) {
+    std::lock_guard<std::mutex> guard(bookchainStorageMutex);
+
     std::ifstream blockchainFile(filename, std::ios::in | std::ios::binary);
 
     if (blockchainFile.fail()) {
@@ -71,6 +84,8 @@ Bloock getBlockByHeight(unsigned int blockHeight, const std::string& filename) {
 }
 
 Bloock getBlockLatest(const std::string& filename) {
+    std::lock_guard<std::mutex> guard(bookchainStorageMutex);
+
     std::ifstream blockchainFile(filename, std::ios::binary);
 
     if (blockchainFile.fail()) {

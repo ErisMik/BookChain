@@ -26,14 +26,14 @@ if( NOT ${oatpp_FOUND} )
   message( WARNING "Oatpp dependency not found, will be fetched and built as a part of this build" )
 
   FetchContent_Declare( oatppcmake
-    GIT_REPOSITORY git@github.com:oatpp/oatpp.git
+    GIT_REPOSITORY https://github.com/oatpp/oatpp.git
     GIT_TAG 27c46444dbac6af79172b1600c7fcc99ff6df42b
   )
 
   FetchContent_GetProperties( oatppcmake )
   if( NOT oatppcmake_POPULATED )
     FetchContent_Populate( oatppcmake )
-    add_subdirectory( ${oatpp_SOURCE_DIR} ${oatpp_BINARY_DIR} )
+    add_subdirectory( ${oatppcmake_SOURCE_DIR} ${oatppcmake_BINARY_DIR} )
     add_library( oatpp::oatpp ALIAS oatpp )
   endif()
 endif()

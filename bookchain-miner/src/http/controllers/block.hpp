@@ -35,7 +35,7 @@ public:
 #include OATPP_CODEGEN_BEGIN(ApiController)
 
     ENDPOINT("GET", "/blocks", blocks) {
-        Bloockchain bloockchainView;
+        BlookchainView bloockchainView;
         int bloockchainHeight = bloockchainView.height();
 
         auto result = oatpp::data::mapping::type::List<BlockDto::ObjectWrapper>::createShared();
@@ -51,7 +51,7 @@ public:
     }
 
     ENDPOINT("GET", "/blocks/{blockHeight}", blockByHeight, PATH(Int64, blockHeight)) {
-        Bloockchain bloockchainView;
+        BlookchainView bloockchainView;
         Bloock bloock = bloockchainView.bloock(blockHeight);
 
         auto dto = serializeBlockToDTO(bloock);

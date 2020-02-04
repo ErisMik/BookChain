@@ -1,47 +1,44 @@
 #include "chain.hpp"
-#include "utils.hpp"
-#include <iostream>
+#include "storage.hpp"
 
 namespace bookchain {
 
-bool verifyChain(const std::vector<Bloock>& bloockChain) {
-    Bloock prevBloock;
-
-    bool isValid = true;
-
-    for (auto& bloock : bloockChain) {
-        if (prevBloock.nonce() != 0) {  // TODO(Eric Mikulin): 2020-01-14, Find a better way to skip the first block
-            // std::cout << utils::hexifystring(bloock.blockHash()) << " ";
-            // std::cout << utils::hexifystring(bloock.prevHash()) << " ";
-            // std::cout << utils::hexifystring(prevBloock.blockHash()) << std::endl;
-
-            if (!verifyPair(prevBloock, bloock)) {
-                isValid = false;
-                break;
-            }
-        }
-        prevBloock = bloock;
-    }
-
-    return isValid;
+Bloockchain::Bloockchain(const std::string& filename) :
+    _nextIndex(0), _filename(filename) {
 }
 
-bool verifyPair(Bloock lowerBloock, Bloock upperBloock) {
-    bool isValid = true;
+void Bloockchain::append(Bloock bloock) {
+    storage::appendChain(bloock, this->_filename);
+}
 
-    // TODO(Eric Mikulin): Check difficulty
+Bloock Bloockchain::latest() {
+    return storage::getBlockLatest(this->_filename);
+}
 
-    // Check that heights are valid
-    if (upperBloock.blockHeight() - lowerBloock.blockHeight() != 1) {
-        isValid = false;
-    }
+Bloock Bloockchain::bloock(int height) {
+    return storage::getBlockByHeight(height, this->_filename);
+}
 
-    // Check that hashes are valid
-    if (upperBloock.prevHash() != lowerBloock.blockHash()) {
-        isValid = false;
-    }
+int Bloockchain::height() {
+    return storage::getChainHeight(this->_filename);
+}
 
-    return isValid;
+bool Bloockchain::hasNext() {
+    return this->_nextIndex <= this->height();
+}
+
+Bloock Bloockchain::next() {
+    Bloock bloock = storage::getBlockByHeight(this->_nextIndex, this->_filename);
+    this->_nextIndex += 1;
+    return bloock;
+}
+
+void Bloockchain::resetNext() {
+    this->_nextIndex = 0;
+}
+
+void Bloockchain::purge() {
+    storage::purgeChain(this->_filename);
 }
 
 }  // namespace bookchain

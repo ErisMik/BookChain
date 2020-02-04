@@ -1,7 +1,8 @@
-cmake_minimum_required( VERSION 3.10 )
+cmake_minimum_required( VERSION 3.11 )
 set( CMAKE_CXX_STANDARD 17 )
 project( bookchain_miner )
 
+include( FetchContent )
 
 # Find clang-tidy executable
 find_program( CLANG_TIDY_EXE NAMES "clang-tidy" )
@@ -13,24 +14,42 @@ else()
 endif()
 
 
-# JSON library dependency
+# NLohmann JSON dependency
 set( JSON_BuildTests OFF CACHE INTERNAL "" )
 set( JSON_Install OFF CACHE INTERNAL "" )
 add_subdirectory( thirdparty/nlohmann_json )
 
 
+# Oat++ Dependency
+find_package( oatpp 1.0.0 )
+if( NOT ${oatpp_FOUND} )
+  message( WARNING "Oatpp dependency not found, will be fetched and built as a part of this build" )
+
+  FetchContent_Declare( oatppcmake
+    GIT_REPOSITORY https://github.com/oatpp/oatpp.git
+    GIT_TAG 27c46444dbac6af79172b1600c7fcc99ff6df42b
+  )
+
+  FetchContent_GetProperties( oatppcmake )
+  if( NOT oatppcmake_POPULATED )
+    FetchContent_Populate( oatppcmake )
+    add_subdirectory( ${oatppcmake_SOURCE_DIR} ${oatppcmake_BINARY_DIR} )
+    add_library( oatpp::oatpp ALIAS oatpp )
+  endif()
+endif()
+
 # Libbookchain
-set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/storage.cpp )
-add_library( bookchain SHARED ${LIBBOOKCHAIN_SOURCES} )
-target_compile_options( bookchain PUBLIC "-Wall" )
+set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/chaintools.cpp src/storage.cpp src/peers.cpp src/http/server.cpp )
+add_library( bookchain STATIC ${LIBBOOKCHAIN_SOURCES} )
+target_compile_options( bookchain PUBLIC "-Wall" "-Wextra" "-Wpedantic" )
 target_include_directories( bookchain PUBLIC "src/" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )
-target_link_libraries( bookchain PUBLIC pthread crypto PRIVATE nlohmann_json::nlohmann_json )
+target_link_libraries( bookchain PUBLIC pthread crypto oatpp::oatpp nlohmann_json::nlohmann_json )
 
 
-# Main miner executable
-set( MINER_SOURCES src/miner.cpp )
+# Main exectuable
+set( MINER_SOURCES src/main.cpp )
 add_executable( miner ${MINER_SOURCES} )
-target_compile_options( miner PUBLIC "-Wall" )
+target_compile_options( miner PUBLIC "-Wall" "-Wextra" "-Wpedantic" )
 target_include_directories( miner PUBLIC "src/" )
 target_link_libraries( miner PUBLIC bookchain )
 
@@ -38,7 +57,7 @@ target_link_libraries( miner PUBLIC bookchain )
 # Build tests
 if ( ENABLE_MINER_TESTS )
     enable_testing()
-    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chain.cpp )
+    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chaintools.cpp )
     add_executable( test_bookchain ${TEST_BOOKCHAIN_SOURCES} )
     target_include_directories( test_bookchain SYSTEM PRIVATE "thirdparty/catch/" "src/" )
     target_link_libraries( test_bookchain PUBLIC bookchain )

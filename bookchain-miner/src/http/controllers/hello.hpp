@@ -1,6 +1,7 @@
 #pragma once
 
 #include "http/dtos/dtos.hpp"
+#include "utils.hpp"
 #include "version.hpp"
 
 #include <oatpp/core/macro/codegen.hpp>
@@ -19,9 +20,9 @@ public:
 #include OATPP_CODEGEN_BEGIN(ApiController)
 
     ENDPOINT("GET", "/", root) {
-        auto dto = BasicMessageDto::createShared();
-        dto->statusCode = 200;
-        dto->message = "Hello World!";
+        auto dto = HelloMessageDto::createShared();
+        dto->identifier = utils::identifierHash();
+        dto->version = versionString;
         return createDtoResponse(Status::CODE_200, dto);
     }
 

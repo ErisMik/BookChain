@@ -12,6 +12,19 @@
 
 namespace bookchain::http {
 
+BlockDto::ObjectWrapper serializeBlockToDTO(Bloock bloock) {
+    auto dto = BlockDto::createShared();
+
+    dto->prevHash = utils::hexifystring(bloock.prevHash()).c_str();
+    dto->seedHash = utils::hexifystring(bloock.seedHash()).c_str();
+    dto->blockHeight = bloock.blockHeight();
+    dto->nonce = bloock.nonce();
+    dto->signature = utils::hexifystring(bloock.signature()).c_str();
+    dto->data = utils::hexifystringTruncated(bloock.data()).c_str();
+
+    return dto;
+}
+
 class BlockController : public oatpp::web::server::api::ApiController {
 public:
     BlockController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper)) :
@@ -29,13 +42,7 @@ public:
         for (int i = 0; i < bloockchainHeight; ++i) {
             Bloock bloock = bloockchainView.bloock(i);
 
-            auto dto = BlockDto::createShared();
-            dto->prevHash = utils::hexifystring(bloock.prevHash()).c_str();
-            dto->seedHash = utils::hexifystring(bloock.seedHash()).c_str();
-            dto->blockHeight = bloock.blockHeight();
-            dto->nonce = bloock.nonce();
-            dto->signature = utils::hexifystring(bloock.signature()).c_str();
-            dto->data = utils::hexifystring(bloock.data()).c_str();
+            auto dto = serializeBlockToDTO(bloock);
 
             result->pushBack(dto);
         }
@@ -47,13 +54,7 @@ public:
         Bloockchain bloockchainView;
         Bloock bloock = bloockchainView.bloock(blockHeight);
 
-        auto dto = BlockDto::createShared();
-        dto->prevHash = utils::hexifystring(bloock.prevHash()).c_str();
-        dto->seedHash = utils::hexifystring(bloock.seedHash()).c_str();
-        dto->blockHeight = bloock.blockHeight();
-        dto->nonce = bloock.nonce();
-        dto->signature = utils::hexifystring(bloock.signature()).c_str();
-        dto->data = utils::hexifystring(bloock.data()).c_str();
+        auto dto = serializeBlockToDTO(bloock);
 
         return createDtoResponse(Status::CODE_200, dto);
     }

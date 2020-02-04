@@ -9,11 +9,11 @@ namespace bookchain::http {
 /* Begin DTO code-generation */
 #include OATPP_CODEGEN_BEGIN(DTO)
 
-class BasicMessageDto : public oatpp::data::mapping::type::Object {
-    DTO_INIT(BasicMessageDto, Object)
+class HelloMessageDto : public oatpp::data::mapping::type::Object {
+    DTO_INIT(HelloMessageDto, Object)
 
-    DTO_FIELD(Int32, statusCode);
-    DTO_FIELD(String, message);
+    DTO_FIELD(UInt64, identifier);
+    DTO_FIELD(String, version);
 };
 
 class BlockDto : public oatpp::data::mapping::type::Object {

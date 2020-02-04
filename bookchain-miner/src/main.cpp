@@ -24,7 +24,7 @@ int main(int /*argc*/, const char* /*argv*/[]) {
     bloockchain.append(testBloock);
 
     constexpr int testBloockchainLength = 100;
-    for (int i = 1; i < testBloockchainLength; ++i) {
+    for (int i = 1; i <= testBloockchainLength; ++i) {
         bookchain::Bloock newBloock(bloockchain.latest().blockHash(), "i", i);
         newBloock.setNonce(i);
         bloockchain.append(newBloock);

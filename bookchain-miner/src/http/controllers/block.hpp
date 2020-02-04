@@ -1,6 +1,6 @@
 #pragma once
 
-#include "http/dtos/dtos.hpp"
+#include "http/dtos/blockdtos.hpp"
 
 #include "block.hpp"
 #include "chain.hpp"

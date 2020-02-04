@@ -8,7 +8,7 @@ constexpr char bloockchainFilename[] = "theblock.chain";
 
 class BlookchainView {
 public:
-    BlookchainView(const std::string& filename = bloockchainFilename);
+    BlookchainView(std::string filename = bloockchainFilename);
     Bloock latest();
     Bloock bloock(int height);
     int height();
@@ -25,7 +25,7 @@ protected:
 class Bloockchain : public BlookchainView {
 public:
     Bloockchain(const std::string& filename = bloockchainFilename);
-    void append(Bloock bloock);
+    void append(Bloock& bloock);
 
     void purge();
 };

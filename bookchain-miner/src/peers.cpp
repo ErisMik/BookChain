@@ -2,8 +2,8 @@
 
 namespace bookchain {
 
-Peer::Peer(const std::string& ipAddress) :
-    _active(false), _ipAddress(ipAddress) {
+Peer::Peer(std::string ipAddress) :
+    _active(false), _ipAddress(std::move(ipAddress)) {
 }
 
 bool Peer::active() {

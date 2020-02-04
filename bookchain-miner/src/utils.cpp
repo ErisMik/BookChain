@@ -5,11 +5,11 @@
 namespace bookchain::utils {
 
 namespace {
-const std::string identifier = "Bookchain!";
-}
+constexpr char identifier[] = "Bookchain!";
+}  //namespace
 
 uint64_t identifierHash() {
-    size_t hash = std::hash<std::string> {}(identifier);
+    size_t hash = std::hash<std::string> {}(&identifier[0]);
     return uint64_t(hash);
 }
 
@@ -26,7 +26,7 @@ std::string hexifystring(const std::string& data) {
 }
 
 std::string hexifystringTruncated(const std::string& data) {
-    std::string dataTrucated(data.c_str());
+    std::string dataTrucated(data.c_str());  // NOLINT(readability-redundant-string-cstr)
     return hexifystring(dataTrucated);
 }
 

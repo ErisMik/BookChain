@@ -3,8 +3,8 @@
 
 namespace bookchain {
 
-BlookchainView::BlookchainView(const std::string& filename) :
-    _nextIndex(0), _filename(filename) {
+BlookchainView::BlookchainView(std::string filename) :
+    _nextIndex(0), _filename(std::move(filename)) {
 }
 
 Bloock BlookchainView::latest() {
@@ -37,7 +37,7 @@ Bloockchain::Bloockchain(const std::string& filename) :
     BlookchainView(filename) {
 }
 
-void Bloockchain::append(Bloock bloock) {
+void Bloockchain::append(Bloock& bloock) {
     storage::appendChain(bloock, this->_filename);
 }
 

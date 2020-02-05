@@ -3,8 +3,8 @@
 namespace bookchain {
 
 namespace {
-    // TODO(Eric Mikulin): This needs to not be a global static variable
-    std::vector<Peer> nodePeersList;
+// TODO(Eric Mikulin): This needs to not be a global static variable
+std::vector<Peer> nodePeersList;
 }  // namespace
 
 Peer::Peer(std::string ipAddress) :

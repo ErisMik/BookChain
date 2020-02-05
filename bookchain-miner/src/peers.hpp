@@ -7,7 +7,7 @@ namespace bookchain {
 
 class Peer {
 public:
-    Peer(const std::string& ipAddress);
+    explicit Peer(std::string ipAddress);
 
     bool active();
     void makeInactive();
@@ -20,14 +20,14 @@ private:
     std::string _ipAddress;
 };
 
-class PeersList {
-    void addPeer(const Peer& peer);
+class PeersListView {
+public:
     std::vector<Peer> activePeers();
-
-private:
-    std::vector<Peer> _peersList;
 };
 
-static PeersList NodePeersList;
+class PeersList : public PeersListView {
+public:
+    void addPeer(const Peer& peer);
+};
 
 }  // namespace bookchain

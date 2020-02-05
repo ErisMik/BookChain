@@ -18,7 +18,7 @@ void purgeChain(const std::string& filename) {
     blockchainFile.close();
 }
 
-void dumpChain(std::vector<Bloock> bloockChain, const std::string& filename) {
+void dumpChain(std::vector<Bloock>& bloockChain, const std::string& filename) {
     std::lock_guard<std::mutex> guard(bookchainStorageMutex);
 
     std::ofstream blockchainFile(filename, std::ios::binary);
@@ -50,7 +50,7 @@ std::vector<Bloock> getChain(const std::string& filename) {
     return bloockChain;
 }
 
-void appendChain(Bloock bloock, const std::string& filename) {
+void appendChain(Bloock& bloock, const std::string& filename) {
     std::lock_guard<std::mutex> guard(bookchainStorageMutex);
 
     std::ofstream blockchainFile(filename, std::ios::ate | std::ios::app | std::ios::binary);

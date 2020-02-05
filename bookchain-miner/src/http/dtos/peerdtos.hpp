@@ -8,11 +8,17 @@ namespace bookchain::http {
 /* Begin DTO code-generation */
 #include OATPP_CODEGEN_BEGIN(DTO)
 
-class HelloMessageDto : public oatpp::data::mapping::type::Object {
-    DTO_INIT(HelloMessageDto, Object)
+class PeerLinkDto : public oatpp::data::mapping::type::Object {
+    DTO_INIT(PeerLinkDto, Object)
 
     DTO_FIELD(UInt64, identifier);
     DTO_FIELD(String, version);
+};
+
+class PeerDto : public oatpp::data::mapping::type::Object {
+    DTO_INIT(PeerDto, Object)
+
+    DTO_FIELD(String, ipAddress);
 };
 
 /* End DTO code-generation */

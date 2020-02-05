@@ -2,8 +2,13 @@
 
 namespace bookchain {
 
-Peer::Peer(const std::string& ipAddress) :
-    _active(false), _ipAddress(ipAddress) {
+namespace {
+// TODO(Eric Mikulin): This needs to not be a global static variable
+std::vector<Peer> nodePeersList;
+}  // namespace
+
+Peer::Peer(std::string ipAddress) :
+    _active(false), _ipAddress(std::move(ipAddress)) {
 }
 
 bool Peer::active() {
@@ -22,18 +27,20 @@ std::string Peer::ipAddress() {
     return this->_ipAddress;
 }
 
-void PeersList::addPeer(const Peer& peer) {
-    this->_peersList.push_back(peer);
-}
+// TODO(Eric Mikulin): THIS NEEDS TO BE MADE THREADSAFE
 
-std::vector<Peer> PeersList::activePeers() {
+std::vector<Peer> PeersListView::activePeers() {
     std::vector<Peer> activePeers;
-    for (auto& peer : this->_peersList) {
+    for (auto& peer : nodePeersList) {
         if (peer.active()) {
             activePeers.push_back(peer);
         }
     }
     return activePeers;
+}
+
+void PeersList::addPeer(const Peer& peer) {
+    nodePeersList.push_back(peer);
 }
 
 }  // namespace bookchain

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 
 constexpr size_t hashLength = 20;

@@ -14,6 +14,15 @@ else()
 endif()
 
 
+# Find include-what-you-use executable
+find_program( IWYU_EXE NAMES "include-what-you-use" "iwyu" )
+if( NOT IWYU_EXE )
+  message( STATUS "include-what-you-use not found." )
+else()
+  message( STATUS "include-what-you-use found: ${IWYU_EXE}" )
+endif()
+
+
 # NLohmann JSON dependency
 set( JSON_BuildTests OFF CACHE INTERNAL "" )
 set( JSON_Install OFF CACHE INTERNAL "" )
@@ -37,6 +46,7 @@ if( NOT ${oatpp_FOUND} )
     add_library( oatpp::oatpp ALIAS oatpp )
   endif()
 endif()
+
 
 # Libbookchain
 set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/chaintools.cpp src/storage.cpp src/peers.cpp src/http/server.cpp )
@@ -71,4 +81,11 @@ if ( ENABLE_CLANG_TIDY_CHECK AND CLANG_TIDY_EXE )
     set_target_properties( bookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
     set_target_properties( miner PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
     set_target_properties( test_bookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
+endif()
+
+
+# Use IWYU as a sanity checker for miner
+if ( ENABLE_IWYU_CHECK AND IWYU_EXE )
+    set_target_properties( bookchain PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "${IWYU_EXE}" )
+    set_target_properties( miner PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "${IWYU_EXE}" )
 endif()

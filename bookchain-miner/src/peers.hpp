@@ -20,12 +20,14 @@ private:
     std::string _ipAddress;
 };
 
-class PeersList {
-    void addPeer(const Peer& peer);
+class PeersListView {
+public:
     std::vector<Peer> activePeers();
+};
 
-private:
-    std::vector<Peer> _peersList;
+class PeersList : public PeersListView {
+public:
+    void addPeer(const Peer& peer);
 };
 
 }  // namespace bookchain

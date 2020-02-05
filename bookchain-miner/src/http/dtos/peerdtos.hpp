@@ -15,6 +15,12 @@ class PeerLinkDto : public oatpp::data::mapping::type::Object {
     DTO_FIELD(String, version);
 };
 
+class PeerDto : public oatpp::data::mapping::type::Object {
+    DTO_INIT(PeerDto, Object)
+
+    DTO_FIELD(String, ipAddress);
+};
+
 /* End DTO code-generation */
 #include OATPP_CODEGEN_END(DTO)
 

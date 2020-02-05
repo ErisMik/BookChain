@@ -11,6 +11,14 @@
 
 namespace bookchain::http {
 
+PeerDto::ObjectWrapper serializePeerToDTO(Peer peer) {
+    auto dto = PeerDto::createShared();
+
+    dto->ipAddress = peer.ipAddress().c_str();
+
+    return dto;
+}
+
 class PeerController : public oatpp::web::server::api::ApiController {
 public:
     PeerController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper), OATPP_COMPONENT(sharedTSQueue<Peer>, peerQueueComponent)) :
@@ -24,11 +32,17 @@ public:
 #include OATPP_CODEGEN_BEGIN(ApiController)
 
     ENDPOINT("GET", "/peers", peers) {
-        auto dto = PeerLinkDto::createShared();
-        dto->identifier = utils::identifierHash();
-        dto->version = versionString;
+        PeersListView peersListView;
 
-        return createDtoResponse(Status::CODE_200, dto);
+        auto activePeers = peersListView.activePeers();
+
+        auto result = oatpp::data::mapping::type::List<PeerDto::ObjectWrapper>::createShared();
+        for (auto& peer : activePeers) {
+            auto dto = serializePeerToDTO(peer);
+            result->pushBack(dto);
+        }
+
+        return createDtoResponse(Status::CODE_200, result);
     }
 
     ENDPOINT("GET", "/peers/link", peersLinkGet) {

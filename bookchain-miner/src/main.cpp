@@ -49,10 +49,13 @@ void launchMiner(bookchain::sharedTSQueue<bookchain::Peer> peerQueue, bookchain:
     std::cout << "Miner thread stopped" << std::endl;
 
     std::cout << "Looping!" << std::endl;
+    bookchain::PeersList peersList;
     while (true) {
         if (!peerQueue->empty()) {
             bookchain::Peer peer = peerQueue->pop();
+            peer.makeActive();
             std::cout << "GOT PEER WITH IP " << peer.ipAddress() << std::endl;
+            peersList.addPeer(peer);
         }
     }
 }

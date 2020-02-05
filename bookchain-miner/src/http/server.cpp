@@ -49,7 +49,7 @@ void run(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>&
     server.run();
 }
 
-void startNodeServer(sharedTSQueue<Peer>& peerQueue, sharedTSQueue<std::string>& dataQueue) {
+void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>& dataQueue) {
     oatpp::base::Environment::init();
     run(peerQueue, dataQueue);
     oatpp::base::Environment::destroy();

@@ -9,7 +9,7 @@
 #include <iostream>
 #include <thread>
 
-void launchMiner(bookchain::sharedTSQueue<bookchain::Peer> peerQueue, bookchain::sharedTSQueue<std::string> /* dataQueue */) {
+void launchMiner(const bookchain::sharedTSQueue<bookchain::Peer>& peerQueue, const bookchain::sharedTSQueue<std::string>& /* dataQueue */) {
     std::cout << "Launching miner thread" << std::endl;
 
     std::cout << "Creating new bloock" << std::endl;
@@ -60,7 +60,7 @@ void launchMiner(bookchain::sharedTSQueue<bookchain::Peer> peerQueue, bookchain:
     }
 }
 
-void launchNode(bookchain::sharedTSQueue<bookchain::Peer> peerQueue, bookchain::sharedTSQueue<std::string> dataQueue) {
+void launchNode(const bookchain::sharedTSQueue<bookchain::Peer>& peerQueue, const bookchain::sharedTSQueue<std::string>& dataQueue) {
     std::cout << "Launching node thread" << std::endl;
 
     bookchain::http::startNodeServer(peerQueue, dataQueue);

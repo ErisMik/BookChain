@@ -7,7 +7,7 @@ namespace bookchain {
 
 class Peer {
 public:
-    Peer(std::string ipAddress);
+    explicit Peer(std::string ipAddress);
 
     bool active();
     void makeInactive();

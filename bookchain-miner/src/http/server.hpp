@@ -7,7 +7,7 @@
 namespace bookchain {
 namespace http {
 
-void startNodeServer(sharedTSQueue<Peer>& peerQueue, sharedTSQueue<std::string>& dataQueue);
+void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>& dataQueue);
 
 }  // namespace http
 }  // namespace bookchain

@@ -67,7 +67,7 @@ target_link_libraries( miner PUBLIC bookchain )
 # Build tests
 if ( ENABLE_MINER_TESTS )
     enable_testing()
-    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chaintools.cpp )
+    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chaintools.cpp test/test_smoketests.cpp )
     add_executable( test_bookchain ${TEST_BOOKCHAIN_SOURCES} )
     target_include_directories( test_bookchain SYSTEM PRIVATE "thirdparty/catch/" "src/" )
     target_link_libraries( test_bookchain PUBLIC bookchain )

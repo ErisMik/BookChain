@@ -6,50 +6,59 @@
 #include "queue.hpp"
 #include "storage.hpp"
 #include "utils.hpp"
+#include <chrono>
 #include <iostream>
+#include <random>
 #include <thread>
 
-void launchMiner(const bookchain::sharedTSQueue<bookchain::Peer>& peerQueue, const bookchain::sharedTSQueue<std::string>& /* dataQueue */) {
+void launchMiner(const bookchain::sharedTSQueue<std::string>& dataQueue) {
     std::cout << "Launching miner thread" << std::endl;
 
-    std::cout << "Creating new bloock" << std::endl;
-    bookchain::Bloock testBloock("i", "i", 0);
-    testBloock.writeData("i");
-    std::cout << bookchain::utils::hexifystring(testBloock.blockHash()) << std::endl;
-    std::cout << bookchain::utils::hexifystring(testBloock.prevHash()) << std::endl;
-
-    bookchain::Bloock testBloockTwo(testBloock.block());
-    std::cout << bookchain::utils::hexifystring(testBloockTwo.blockHash()) << std::endl;
-    std::cout << bookchain::utils::hexifystring(testBloockTwo.prevHash()) << std::endl;
-
+    std::random_device randomDevice;
+    std::uniform_int_distribution<int64_t> randomDistribution(std::numeric_limits<int64_t>::min(), std::numeric_limits<int64_t>::max());
     bookchain::Bloockchain bloockchain;
-    bloockchain.purge();
-    bloockchain.append(testBloock);
 
-    constexpr int testBloockchainLength = 100;
-    for (int i = 1; i <= testBloockchainLength; ++i) {
-        bookchain::Bloock newBloock(bloockchain.latest().blockHash(), "i", i);
-        newBloock.setNonce(i);
-        bloockchain.append(newBloock);
+    if (bloockchain.height() == 0) {
+        std::cout << "No chain found, creating a new chain" << std::endl;
+        bookchain::Bloock genesisBloock("P R E V H A S H", "S E E D H A S H", 0);
+        genesisBloock.writeData("G E N E S I S");
+        bloockchain.append(genesisBloock);
     }
 
-    std::cout << bookchain::verifyChain(bloockchain) << " " << bloockchain.height() << " " << sizeof(bookchain::Bloock) << std::endl;
+    while (true) {
+        std::string data;
+        if (!dataQueue->empty()) {
+            data = dataQueue->front();
+        }
 
-    bookchain::Bloockchain bloockchain2;
+        const int miningHeight = bloockchain.height() + 1;
+        bookchain::Bloock miningBloock(bloockchain.latest().blockHash(), "S E E D H A S H", miningHeight);
 
-    std::cout << bookchain::verifyChain(bloockchain2) << std::endl;
+        while (miningBloock.blockHash()[0] != 'E') {
+            miningBloock.setNonce(randomDistribution(randomDevice));
 
-    std::cout << bloockchain.height() << " " << bloockchain2.height() << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // SHA1 is too easy, need to nerf it until proper POW is added
+        }
 
-    constexpr unsigned int testBlockHeight = 5U;
-    bookchain::Bloock fifthBlock = bookchain::storage::getBlockByHeight(testBlockHeight, &bookchain::bloockchainFilename[0]);
-    std::cout << bookchain::utils::hexifystring(fifthBlock.blockHash()) << std::endl;
-    std::cout << bookchain::utils::hexifystring(bloockchain.bloock(testBlockHeight).blockHash()) << std::endl;
+        std::cout << "Block " << miningHeight << " found with hash: " << bookchain::utils::hexifystring(miningBloock.blockHash()) << std::endl;
+
+        bookchain::Bloock latestBloock = bloockchain.latest();
+        if (bookchain::verifyPair(latestBloock, miningBloock)) {
+            std::cout << "Block " << bookchain::utils::hexifystring(miningBloock.blockHash()) << " added to chain!" << std::endl;
+            bloockchain.append(miningBloock);
+        } else {
+            std::cout << "Block " << bookchain::utils::hexifystring(miningBloock.blockHash()) << " no longer valid" << std::endl;
+        }
+    }
 
     std::cout << "Miner thread stopped" << std::endl;
+}
 
-    std::cout << "Looping!" << std::endl;
+void launchPeer(const bookchain::sharedTSQueue<bookchain::Peer>& peerQueue) {
+    std::cout << "Launching peer thread" << std::endl;
+
     bookchain::PeersList peersList;
+
     while (true) {
         if (!peerQueue->empty()) {
             bookchain::Peer peer = peerQueue->pop();
@@ -57,7 +66,11 @@ void launchMiner(const bookchain::sharedTSQueue<bookchain::Peer>& peerQueue, con
             std::cout << "GOT PEER WITH IP " << peer.ipAddress() << std::endl;
             peersList.addPeer(peer);
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
+
+    std::cout << "Peer thread stopped" << std::endl;
 }
 
 void launchNode(const bookchain::sharedTSQueue<bookchain::Peer>& peerQueue, const bookchain::sharedTSQueue<std::string>& dataQueue) {
@@ -72,9 +85,11 @@ int main(int /*argc*/, const char* /*argv*/[]) {
     auto peerQueue = std::make_shared<bookchain::ThreadsafeQueue<bookchain::Peer>>();
     auto dataQueue = std::make_shared<bookchain::ThreadsafeQueue<std::string>>();
 
-    std::thread minerThread(launchMiner, peerQueue, dataQueue);
+    std::thread minerThread(launchMiner, dataQueue);
+    std::thread peerThread(launchPeer, peerQueue);
     std::thread nodeThread(launchNode, peerQueue, dataQueue);
 
     minerThread.join();
+    peerThread.join();
     nodeThread.join();
 }

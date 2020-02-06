@@ -10,6 +10,7 @@ template <typename T>
 class ThreadsafeQueue {
 public:
     void push(T& element);
+    T front();
     T pop();
 
     bool empty();
@@ -26,6 +27,13 @@ template <typename T>
 void ThreadsafeQueue<T>::push(T& element) {
     std::lock_guard<std::mutex> guard(this->_queueMutex);
     this->_queue.push(element);
+}
+
+template <typename T>
+T ThreadsafeQueue<T>::front() {
+    std::lock_guard<std::mutex> guard(this->_queueMutex);
+    T queueItem = this->_queue.front();
+    return queueItem;
 }
 
 template <typename T>

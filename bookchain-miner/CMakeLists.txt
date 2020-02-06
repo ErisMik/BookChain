@@ -49,7 +49,7 @@ endif()
 
 
 # Libbookchain
-set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/chaintools.cpp src/storage.cpp src/peers.cpp src/http/server.cpp )
+set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/chaintools.cpp src/storage.cpp src/peers.cpp src/difficulty.cpp src/http/server.cpp )
 add_library( bookchain STATIC ${LIBBOOKCHAIN_SOURCES} )
 target_compile_options( bookchain PUBLIC "-Wall" "-Wextra" "-Wpedantic" )
 target_include_directories( bookchain PUBLIC "src/" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )

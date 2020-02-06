@@ -6,6 +6,7 @@
 #include "queue.hpp"
 #include "storage.hpp"
 #include "utils.hpp"
+#include "difficulty.hpp"
 #include <chrono>
 #include <iostream>
 #include <random>
@@ -34,10 +35,10 @@ void launchMiner(const bookchain::sharedTSQueue<std::string>& dataQueue) {
         const int miningHeight = bloockchain.height() + 1;
         bookchain::Bloock miningBloock(bloockchain.latest().blockHash(), "S E E D H A S H", miningHeight);
 
-        while (miningBloock.blockHash()[0] != 'E') {
+        while (verifyBlockDifficulty(miningBloock)) {
             miningBloock.setNonce(randomDistribution(randomDevice));
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // SHA1 is too easy, need to nerf it until proper POW is added
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));  // SHA1 is too easy, need to nerf it until proper POW is added
         }
 
         std::cout << "Block " << miningHeight << " found with hash: " << bookchain::utils::hexifystring(miningBloock.blockHash()) << std::endl;

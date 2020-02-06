@@ -1,11 +1,11 @@
 #include "http/server.hpp"
-#include "peers.hpp"
-#include "queue.hpp"
 #include "mainminer.hpp"
 #include "mainpeers.hpp"
+#include "peers.hpp"
+#include "queue.hpp"
 #include <iostream>
-#include <thread>
 #include <string>
+#include <thread>
 
 void launchNode(const bookchain::sharedTSQueue<bookchain::Peer>& peerQueue, const bookchain::sharedTSQueue<std::string>& dataQueue) {
     std::cout << "Launching node thread" << std::endl;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "queue.hpp"
 #include "peers.hpp"
+#include "queue.hpp"
 
 namespace bookchain {
 

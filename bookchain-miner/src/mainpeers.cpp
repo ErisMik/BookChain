@@ -1,17 +1,17 @@
 #include "mainpeers.hpp"
 
-#include <thread>
 #include <iostream>
+#include <thread>
 
 namespace bookchain {
 
 void discoverInitialPeers(PeersList& peersList) {
-	constexpr char peerHints[] = "192.168.1.1";
+    constexpr char peerHints[] = "192.168.1.1";
 
-	// TODO(Eric Mikulin)
-	// Starting with peer hints search until another node is found.
-	// Once found, download peers peerslist and add to our peerslist.
-	// Then link to peer.
+    // TODO(Eric Mikulin)
+    // Starting with peer hints search until another node is found.
+    // Once found, download peers peerslist and add to our peerslist.
+    // Then link to peer.
 }
 
 void syncBlocksWithPeers(PeersList& peersList) {
@@ -20,13 +20,16 @@ void syncBlocksWithPeers(PeersList& peersList) {
 void syncPeersWithPeers(PeersList& peersList) {
 }
 
+void syncDataWithPeers(PeersList& peersList) {
+}
+
 void handleNewPeers(PeersList& peersList, const sharedTSQueue<Peer>& peerQueue) {
-        while (!peerQueue->empty()) {
-            Peer peer = peerQueue->pop();
-            peer.makeActive();
-            std::cout << "GOT PEER WITH IP " << peer.ipAddress() << std::endl;
-            peersList.addPeer(peer);
-        }
+    while (!peerQueue->empty()) {
+        Peer peer = peerQueue->pop();
+        peer.makeActive();
+        std::cout << "GOT PEER WITH IP " << peer.ipAddress() << std::endl;
+        peersList.addPeer(peer);
+    }
 }
 
 void peerMainLoop(const sharedTSQueue<Peer>& peerQueue) {
@@ -36,10 +39,10 @@ void peerMainLoop(const sharedTSQueue<Peer>& peerQueue) {
     discoverInitialPeers(peersList);
 
     while (true) {
-	discoverInitialPeers(peersList);
-	syncBlocksWithPeers(peersList);
-	syncPeersWithPeers(peersList);
-	handleNewPeers(peersList, peerQueue);
+        syncBlocksWithPeers(peersList);
+        syncPeersWithPeers(peersList);
+        syncDataWithPeers(peersList);
+        handleNewPeers(peersList, peerQueue);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }

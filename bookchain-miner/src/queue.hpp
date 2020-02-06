@@ -21,9 +21,6 @@ private:
 };
 
 template <typename T>
-using sharedTSQueue = std::shared_ptr<ThreadsafeQueue<T>>;
-
-template <typename T>
 void ThreadsafeQueue<T>::push(T& element) {
     std::lock_guard<std::mutex> guard(this->_queueMutex);
     this->_queue.push(element);
@@ -49,5 +46,8 @@ bool ThreadsafeQueue<T>::empty() {
     std::lock_guard<std::mutex> guard(this->_queueMutex);
     return this->_queue.empty();
 }
+
+template <typename T>
+using sharedTSQueue = std::shared_ptr<ThreadsafeQueue<T>>;
 
 }  // namespace bookchain

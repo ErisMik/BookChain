@@ -1,14 +1,14 @@
 #include "mainpeers.hpp"
 
 #include "block.hpp"
-#include "difficulty.hpp"
 #include "chain.hpp"
 #include "chaintools.hpp"
+#include "difficulty.hpp"
 #include "utils.hpp"
-#include <thread>
-#include <iostream>
 #include <chrono>
+#include <iostream>
 #include <random>
+#include <thread>
 
 namespace bookchain {
 

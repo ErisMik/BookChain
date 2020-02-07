@@ -13,11 +13,11 @@ class PeerLinkDto : public oatpp::data::mapping::type::Object {
 
     DTO_FIELD(UInt64, identifier);
     DTO_FIELD(String, version);
+    DTO_FIELD(String, ipAddress);
 };
 
 class PeerDto : public oatpp::data::mapping::type::Object {
     DTO_INIT(PeerDto, Object)
-
     DTO_FIELD(String, ipAddress);
 };
 

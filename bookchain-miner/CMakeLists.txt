@@ -10,7 +10,7 @@ if( NOT CLANG_TIDY_EXE )
   message( STATUS "clang-tidy not found." )
 else()
   message( STATUS "clang-tidy found: ${CLANG_TIDY_EXE}" )
-  set( DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-fuchsia-default-arguments,-fuchsia-default-arguments-calls,-modernize-use-trailing-return-type" )
+  set( DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-fuchsia-default-arguments,-fuchsia-default-arguments-calls,-modernize-use-trailing-return-type,-*-vararg" )
 endif()
 
 
@@ -53,7 +53,7 @@ set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.c
 add_library( bookchain STATIC ${LIBBOOKCHAIN_SOURCES} )
 target_compile_options( bookchain PUBLIC "-Wall" "-Wextra" "-Wpedantic" )
 target_include_directories( bookchain PUBLIC "src/" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )
-target_link_libraries( bookchain PUBLIC pthread crypto oatpp::oatpp nlohmann_json::nlohmann_json )
+target_link_libraries( bookchain PUBLIC pthread crypto curl oatpp::oatpp nlohmann_json::nlohmann_json )
 
 
 # Main exectuable

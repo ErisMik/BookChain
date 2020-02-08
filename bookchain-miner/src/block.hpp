@@ -2,11 +2,11 @@
 
 #include <string>
 
+namespace bookchain {
+
 constexpr size_t hashLength = 20;
 constexpr size_t hashBufferLength = hashLength + 1;  // Saving room for the null byte
 constexpr size_t blockDataLength = 1 * 1024 * 1024;  // 1 megabyte
-
-namespace bookchain {
 
 struct Block {
     char prevHash[hashBufferLength];

@@ -12,7 +12,7 @@ std::vector<Peer> nodePeersList;
 std::mutex peersListMutex;
 
 Peer::Peer(std::string ipAddress) :
-    _active(false), _ipAddress(std::move(ipAddress)) {
+    _active(true), _ipAddress(std::move(ipAddress)) {
 }
 
 bool Peer::active() {

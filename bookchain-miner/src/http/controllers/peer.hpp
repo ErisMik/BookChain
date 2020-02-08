@@ -46,14 +46,11 @@ public:
     }
 
     ENDPOINT("POST", "/peers/link", peersLinkPost, BODY_DTO(PeerLinkDto::ObjectWrapper, peerDto)) {
-        uint64_t identifier = peerDto->identifier;
-        if (identifier != utils::identifierHash()) {
-            std::string ipAddress = peerDto->ipAddress->std_str();
-            Peer peer (ipAddress);
-            this->_peerQueue->push(peer);
-        }
+        std::string ipAddress = peerDto->ipAddress->std_str();
+        Peer peer (ipAddress);
+        this->_peerQueue->push(peer);
 
-        return createResponse(Status::CODE_200, "Linked succesfully");
+        return createResponse(Status::CODE_200, "{\"success\":true}");
     }
 
 /* Finish ENDPOINTs generation ('ApiController' codegen) */

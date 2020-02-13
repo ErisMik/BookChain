@@ -3,7 +3,12 @@
 namespace bookchain {
 
 bool verifyBlockDifficulty(Bloock& bloock) {
-    return bloock.blockHash()[0] != 'E';
+    bool valid = true;
+
+    // Condition 1: The hash should start with the character 'E'
+    valid = valid && bloock.blockHash()[0] == 'E';
+
+    return valid;
 }
 
 }  // namespace bookchain

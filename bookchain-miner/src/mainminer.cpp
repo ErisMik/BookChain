@@ -35,7 +35,7 @@ void minerMainLoop(const sharedTSQueue<std::string>& dataQueue) {
         const int miningHeight = bloockchain.height() + 1;
         Bloock miningBloock(bloockchain.latest().blockHash(), "S E E D H A S H", miningHeight);
 
-        while (verifyBlockDifficulty(miningBloock)) {
+        while (!verifyBlockDifficulty(miningBloock)) {
             miningBloock.setNonce(randomDistribution(randomDevice));
 
             std::this_thread::sleep_for(std::chrono::milliseconds(10));  // SHA1 is too easy, need to nerf it until proper POW is added

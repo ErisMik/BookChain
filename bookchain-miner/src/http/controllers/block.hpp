@@ -50,6 +50,15 @@ public:
         return createDtoResponse(Status::CODE_200, result);
     }
 
+    ENDPOINT("GET", "/blocks/latest", blockLatest) {
+        BlookchainView bloockchainView;
+        Bloock bloock = bloockchainView.latest();
+
+        auto dto = serializeBlockToDTO(bloock);
+
+        return createDtoResponse(Status::CODE_200, dto);
+    }
+
     ENDPOINT("GET", "/blocks/{blockHeight}", blockByHeight, PATH(Int64, blockHeight)) {
         BlookchainView bloockchainView;
         Bloock bloock = bloockchainView.bloock(blockHeight);

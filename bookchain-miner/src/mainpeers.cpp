@@ -1,4 +1,5 @@
 #include "mainpeers.hpp"
+#include "chain.hpp"
 #include "utils.hpp"
 #include "version.hpp"
 
@@ -92,7 +93,7 @@ void discoverInitialPeers(PeersList& peersList) {
         nlohmann::json peerLinkJson = {
             {"identifier", utils::identifierHash()},
             {"version", versionString},
-            {"ipAddress", "127.0.0.1"}  // TODO(Eric Mikulin): How do I do this hmm
+            {"ipAddress", "127.0.0.1"}  // TODO(Eric Mikulin): Get the IP from the request
         };
         std::string peerLinkResponse = postRequest(peerLinkURL, peerLinkJson.dump());
         auto peerLinkResponseJson = nlohmann::json::parse(peerLinkResponse);
@@ -112,12 +113,36 @@ void discoverInitialPeers(PeersList& peersList) {
 }
 
 void syncBlocksWithPeers(PeersList& peersList) {
+    auto peers = peersList.activePeers();
+    Bloockchain bloockchain;
+
+    for (auto& peer : peers) {
+        std::string blockLatestURL = peer.ipAddress() + "/blocks/latest/";
+        std::string blockLatestResponse = getRequest(blockLatestURL);
+        auto blockLatestJson = nlohmann::json::parse(blockLatestResponse);
+
+        if (blockLatestJson["blockHeight"] > bloockchain.height()) {
+            // TODO(Eric Mikulin): Merge the chains
+        }
+    }
 }
 
 void syncPeersWithPeers(PeersList& peersList) {
+    auto peers = peersList.activePeers();
+
+    for (auto& peer : peers) {
+        std::string peersURL = peer.ipAddress() + "/peers/";
+        std::string peersResponse = getRequest(peersURL);
+        auto peersResponseJson = nlohmann::json::parse(peersResponse);
+        for (auto& peerJson : peersResponseJson) {
+            Peer peer(peerJson["ipAddress"]);
+            peersList.addPeer(peer);
+        }
+    }
 }
 
 void syncDataWithPeers(PeersList& peersList) {
+    // TODO(Eric Mikulin)
 }
 
 void handleNewPeers(PeersList& peersList, const sharedTSQueue<Peer>& peerQueue) {

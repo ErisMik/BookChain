@@ -31,8 +31,6 @@ std::string Peer::ipAddress() {
     return this->_ipAddress;
 }
 
-// TODO(Eric Mikulin): THIS NEEDS TO BE MADE THREADSAFE
-
 std::vector<Peer> PeersListView::activePeers() {
     std::lock_guard<std::mutex> guard(peersListMutex);
     std::vector<Peer> activePeers;

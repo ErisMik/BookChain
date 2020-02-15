@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import TablePagination from '@material-ui/core/TablePagination';
 
 const columns = [
   { id: 'blockHeight', label: 'Height', minWidth: 170 },
@@ -19,24 +20,44 @@ const useStyles = makeStyles({
     width: '100%'
   },
   container: {
-    maxHeight: '90vh'
+    maxHeight: '85vh'
   }
 });
 
 function BlocksView(props) {
   const classes = useStyles();
-
   const [blocks, setBlocks] = React.useState([]);
+  const [maxBlocks, setMaxBlocks] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
+
   React.useEffect(() => {
-    fetch('http://localhost:8000/blocks')
+    fetch(`http://localhost:8000/blocks?page=${page}&page_size=${rowsPerPage}`)
       .then(result => result.json())
-      .then(blocks => setBlocks(blocks));
-  }, []);
+      .then(blocks => {
+        setBlocks(blocks);
+      });
+
+    fetch(`http://localhost:8000/blocks/latest`)
+      .then(result => result.json())
+      .then(block => {
+        setMaxBlocks(block.blockHeight);
+      });
+  }, [page, rowsPerPage]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   function renderRows() {
     return blocks.map(block => {
       return (
-        <TableRow hover role="checkbox" tabIndex={-1} key={block.height}>
+        <TableRow hover role="checkbox" tabIndex={-1} key={block.blockHeight}>
           {columns.map(column => {
             const value = block[column.id];
             return (
@@ -72,6 +93,15 @@ function BlocksView(props) {
           <TableBody>{renderRows()}</TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100, 500]}
+        component="div"
+        count={maxBlocks}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </Paper>
   );
 }

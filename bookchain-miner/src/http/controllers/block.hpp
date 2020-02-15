@@ -15,6 +15,7 @@ namespace bookchain::http {
 BlockDto::ObjectWrapper serializeBlockToDTO(Bloock bloock) {
     auto dto = BlockDto::createShared();
 
+    dto->blockHash = utils::hexifystring(bloock.blockHash()).c_str();
     dto->prevHash = utils::hexifystring(bloock.prevHash()).c_str();
     dto->seedHash = utils::hexifystring(bloock.seedHash()).c_str();
     dto->blockHeight = bloock.blockHeight();
@@ -34,6 +35,7 @@ public:
 /* Begin ENDPOINTs generation ('ApiController' codegen) */
 #include OATPP_CODEGEN_BEGIN(ApiController)
 
+    ADD_CORS(blocks);
     ENDPOINT("GET", "/blocks", blocks) {
         BlookchainView bloockchainView;
         int bloockchainHeight = bloockchainView.height();

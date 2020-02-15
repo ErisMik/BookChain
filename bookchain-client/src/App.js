@@ -6,6 +6,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
+import BlocksView from './components/BlocksView';
+import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,6 +26,10 @@ const useStyles = makeStyles(theme => ({
   menuButtonSection: {
     marginLeft: 'auto',
     marginRight: 0
+  },
+  contentArea: {
+    margin: theme.spacing(2),
+    marginTop: theme.spacing(10)
   }
 }));
 
@@ -36,7 +43,7 @@ function App() {
   return (
     <div className="App">
       <HashRouter>
-        <AppBar position="static">
+        <AppBar position="fixed">
           <Toolbar>
             <Typography
               variant="h5"
@@ -57,12 +64,28 @@ function App() {
               </Link>
             </Typography>
             <Typography variant="h6" className={classes.menuNavLink}>
-              <Link href="/#/peers" color="inherit">
-                Peers
+              <Link href="/#/nodes" color="inherit">
+                Nodes
               </Link>
             </Typography>
 
             <div className={classes.menuButtonSection}>
+              <TextField
+                id="nodeURI"
+                className={classes.menuButton}
+                label="Node URL"
+                variant="outlined"
+                size="small"
+                defaultValue="localhost:8000"
+              />
+              <TextField
+                id="signerURI"
+                className={classes.menuButton}
+                label="Signer URL"
+                variant="outlined"
+                size="small"
+                defaultValue="localhost:8081"
+              />
               <Button
                 variant="contained"
                 color="inherit"
@@ -81,20 +104,22 @@ function App() {
           </Toolbar>
         </AppBar>
 
-        <Switch>
-          <Route path="/books">
-            <p> Books </p>
-          </Route>
-          <Route path="/blocks">
-            <p> Blocks </p>
-          </Route>
-          <Route path="/peers">
-            <p> Peers </p>
-          </Route>
-          <Route path="/">
-            <p> Home </p>
-          </Route>
-        </Switch>
+        <Paper elevation={1} className={classes.contentArea}>
+          <Switch>
+            <Route path="/books">
+              <p> Books </p>
+            </Route>
+            <Route path="/blocks">
+              <BlocksView />
+            </Route>
+            <Route path="/nodes">
+              <p> Nodes </p>
+            </Route>
+            <Route path="/">
+              <p> Home </p>
+            </Route>
+          </Switch>
+        </Paper>
       </HashRouter>
     </div>
   );

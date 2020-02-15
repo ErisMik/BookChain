@@ -11,6 +11,8 @@ namespace bookchain::http {
 class BlockDto : public oatpp::data::mapping::type::Object {
     DTO_INIT(BlockDto, Object)
 
+    DTO_FIELD(String, blockHash);
+
     DTO_FIELD(String, prevHash);
     DTO_FIELD(String, seedHash);
 

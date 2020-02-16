@@ -9,6 +9,7 @@ import Link from '@material-ui/core/Link';
 import BlocksView from './components/BlocksView';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
+import UrlsContext from './contexts/UrlsContext';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,88 +40,108 @@ function linkToGithub() {
 
 function App() {
   const classes = useStyles();
+  const [nodeUrl, setNodeUrl] = React.useState('localhost:8000');
+  const [signerUrl, setSignerUrl] = React.useState('localhost:8081');
+
+  const handleChangeNodeUrl = event => {
+    setNodeUrl(event.target.value);
+  };
+
+  const handleChangeSignerUrl = event => {
+    setSignerUrl(event.target.value);
+  };
+
+  function renderAppBar() {
+    return (
+      <AppBar position="fixed">
+        <Toolbar>
+          <Typography
+            variant="h5"
+            className={[classes.menuNavLink, classes.highlight]}
+          >
+            <Link href="/#/" color="inherit">
+              Bookchain
+            </Link>
+          </Typography>
+          <Typography variant="h6" className={classes.menuNavLink}>
+            <Link href="/#/books" color="inherit">
+              Books
+            </Link>
+          </Typography>
+          <Typography variant="h6" className={classes.menuNavLink}>
+            <Link href="/#/blocks" color="inherit">
+              Blocks
+            </Link>
+          </Typography>
+          <Typography variant="h6" className={classes.menuNavLink}>
+            <Link href="/#/nodes" color="inherit">
+              Nodes
+            </Link>
+          </Typography>
+
+          <div className={classes.menuButtonSection}>
+            <TextField
+              id="nodeURL"
+              className={classes.menuButton}
+              label="Node URL"
+              variant="outlined"
+              size="small"
+              defaultValue={nodeUrl}
+              onChange={handleChangeNodeUrl}
+            />
+            <TextField
+              id="signerURL"
+              className={classes.menuButton}
+              label="Signer URL"
+              variant="outlined"
+              size="small"
+              defaultValue={signerUrl}
+              onChange={handleChangeSignerUrl}
+            />
+            <Button
+              variant="contained"
+              color="inherit"
+              className={classes.menuButton}
+            >
+              Upload
+            </Button>
+            <Button
+              onClick={() => linkToGithub()}
+              color="inherit"
+              className={classes.menuButton}
+            >
+              Github
+            </Button>
+          </div>
+        </Toolbar>
+      </AppBar>
+    );
+  }
 
   return (
     <div className="App">
-      <HashRouter>
-        <AppBar position="fixed">
-          <Toolbar>
-            <Typography
-              variant="h5"
-              className={[classes.menuNavLink, classes.highlight]}
-            >
-              <Link href="/#/" color="inherit">
-                Bookchain
-              </Link>
-            </Typography>
-            <Typography variant="h6" className={classes.menuNavLink}>
-              <Link href="/#/books" color="inherit">
-                Books
-              </Link>
-            </Typography>
-            <Typography variant="h6" className={classes.menuNavLink}>
-              <Link href="/#/blocks" color="inherit">
-                Blocks
-              </Link>
-            </Typography>
-            <Typography variant="h6" className={classes.menuNavLink}>
-              <Link href="/#/nodes" color="inherit">
-                Nodes
-              </Link>
-            </Typography>
+      <UrlsContext.Provider value={{ nodeUrl, signerUrl }}>
+        <HashRouter>
+          {renderAppBar()}
 
-            <div className={classes.menuButtonSection}>
-              <TextField
-                id="nodeURI"
-                className={classes.menuButton}
-                label="Node URL"
-                variant="outlined"
-                size="small"
-                defaultValue="localhost:8000"
-              />
-              <TextField
-                id="signerURI"
-                className={classes.menuButton}
-                label="Signer URL"
-                variant="outlined"
-                size="small"
-                defaultValue="localhost:8081"
-              />
-              <Button
-                variant="contained"
-                color="inherit"
-                className={classes.menuButton}
-              >
-                Upload
-              </Button>
-              <Button
-                onClick={() => linkToGithub()}
-                color="inherit"
-                className={classes.menuButton}
-              >
-                Github
-              </Button>
-            </div>
-          </Toolbar>
-        </AppBar>
-
-        <Paper elevation={1} className={classes.contentArea}>
-          <Switch>
-            <Route path="/books">
-              <p> Books </p>
-            </Route>
-            <Route path="/blocks">
-              <BlocksView />
-            </Route>
-            <Route path="/nodes">
-              <p> Nodes </p>
-            </Route>
-            <Route path="/">
-              <p> Home </p>
-            </Route>
-          </Switch>
-        </Paper>
-      </HashRouter>
+          <Paper elevation={1} className={classes.contentArea}>
+            <Switch>
+              <Route path="/books">
+                <p> Books </p>
+              </Route>
+              <Route path="/blocks">
+                <BlocksView />
+              </Route>
+              <Route path="/nodes">
+                <p> Nodes </p>
+              </Route>
+              <Route path="/">
+                <p> Home </p>
+              </Route>
+            </Switch>
+          </Paper>
+        </HashRouter>
+      </UrlsContext.Provider>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import BlockCard from 'components/BlockCard';
+import UrlsContext from 'contexts/UrlsContext';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -32,24 +34,26 @@ const useStyles = makeStyles({
 
 function BlocksView(props) {
   const classes = useStyles();
+  const urls = React.useContext(UrlsContext);
   const [blocks, setBlocks] = React.useState([]);
+  const [selectedBlock, setSelectedBlock] = React.useState({});
   const [maxBlocks, setMaxBlocks] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
 
   React.useEffect(() => {
-    fetch(`http://localhost:8000/blocks?page=${page}&page_size=${rowsPerPage}`)
+    fetch(`http://${urls.nodeUrl}/blocks?page=${page}&page_size=${rowsPerPage}`)
       .then(result => result.json())
       .then(blocks => {
         setBlocks(blocks);
       });
 
-    fetch(`http://localhost:8000/blocks/latest`)
+    fetch(`http://${urls.nodeUrl}/blocks/latest`)
       .then(result => result.json())
       .then(block => {
         setMaxBlocks(block.blockHeight);
       });
-  }, [page, rowsPerPage]);
+  }, [urls.nodeUrl, page, rowsPerPage]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -59,6 +63,14 @@ function BlocksView(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  function renderBlockCard() {
+    if (selectedBlock) {
+      return <BlockCard blockHeight={selectedBlock.blockHeight} />;
+    }
+
+    return '';
+  }
 
   function renderRows() {
     return blocks.map(block => {
@@ -71,6 +83,7 @@ function BlocksView(props) {
                 key={column.id}
                 align={column.align}
                 className={classes.tableDataCell}
+                onClick={() => setSelectedBlock(block)}
               >
                 {value}
               </TableCell>
@@ -110,6 +123,7 @@ function BlocksView(props) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
+      {renderBlockCard()}
     </Paper>
   );
 }

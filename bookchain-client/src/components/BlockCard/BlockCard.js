@@ -31,7 +31,9 @@ function BlockCard(props) {
 
     return (
       <CardActions>
-        <Button size="small">View Data</Button>
+        <Button size="small" href={`/#/blocks/${props.blockHeight}/`}>
+          View Data
+        </Button>
       </CardActions>
     );
   }

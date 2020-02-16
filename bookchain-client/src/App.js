@@ -2,13 +2,14 @@ import React from 'react';
 import { HashRouter, Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import BlocksView from './components/BlocksView';
+import BlockView from './components/BlockView';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
-import BlocksView from './components/BlocksView';
-import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import UrlsContext from './contexts/UrlsContext';
 
 const useStyles = makeStyles(theme => ({
@@ -130,7 +131,14 @@ function App() {
                 <p> Books </p>
               </Route>
               <Route path="/blocks">
-                <BlocksView />
+                <Switch>
+                  <Route path="/blocks/:height">
+                    <BlockView />
+                  </Route>
+                  <Route path="/blocks">
+                    <BlocksView />
+                  </Route>
+                </Switch>
               </Route>
               <Route path="/nodes">
                 <p> Nodes </p>

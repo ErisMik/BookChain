@@ -34,7 +34,7 @@ void minerMainLoop(const sharedTSQueue<std::string>& dataQueue) {
             // TODO(Eric Mikulin): Testing, remove when it's ready to remove
             int randomDataLen = blockDataLength * (std::numeric_limits<int64_t>::max() / randomDistribution(randomDevice));
             for (int i = 0; i < randomDataLen; ++i) {
-                data.append(1, (char) randomDistribution(randomDevice));
+                data.append(1, (char)randomDistribution(randomDevice));
             }
         }
 

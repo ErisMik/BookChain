@@ -6,7 +6,7 @@ FROM node:13-slim AS build
 RUN mkdir -p /bookchain/build
 WORKDIR /bookchain/build
 
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock jsconfig.json ./
 RUN yarn install
 
 COPY public/ public/

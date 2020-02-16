@@ -1,7 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import BlockCard from 'components/BlockCard';
-import UrlsContext from 'contexts/UrlsContext';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,6 +13,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import UrlsContext from 'contexts/UrlsContext';
 
 const columns = [
   { id: 'blockHeight', label: 'Height', minWidth: 100 },
@@ -40,6 +44,7 @@ function BlocksView(props) {
   const [maxBlocks, setMaxBlocks] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   React.useEffect(() => {
     fetch(`http://${urls.nodeUrl}/blocks?page=${page}&page_size=${rowsPerPage}`)
@@ -64,13 +69,14 @@ function BlocksView(props) {
     setPage(0);
   };
 
-  function renderBlockCard() {
-    if (selectedBlock) {
-      return <BlockCard blockHeight={selectedBlock.blockHeight} />;
-    }
+  const handleDrawerOpen = block => {
+    setSelectedBlock(block);
+    setDrawerOpen(true);
+  };
 
-    return '';
-  }
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
 
   function renderRows() {
     return blocks.map(block => {
@@ -83,7 +89,7 @@ function BlocksView(props) {
                 key={column.id}
                 align={column.align}
                 className={classes.tableDataCell}
-                onClick={() => setSelectedBlock(block)}
+                onClick={() => handleDrawerOpen(block)}
               >
                 {value}
               </TableCell>
@@ -96,34 +102,52 @@ function BlocksView(props) {
 
   return (
     <Paper className={classes.root}>
-      <TableContainer className={classes.container}>
-        <Table stickyHeader size="small" aria-label="blocks-table">
-          <TableHead>
-            <TableRow>
-              {columns.map(column => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>{renderRows()}</TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100, 500]}
-        component="div"
-        count={maxBlocks}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-      {renderBlockCard()}
+      <Paper>
+        <TableContainer className={classes.container}>
+          <Table stickyHeader size="small" aria-label="blocks-table">
+            <TableHead>
+              <TableRow>
+                {columns.map(column => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>{renderRows()}</TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100, 500]}
+          component="div"
+          count={maxBlocks}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </Paper>
+      <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="right"
+        open={drawerOpen}
+        classes={{
+          paper: classes.drawerPaper
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronRightIcon />
+          </IconButton>
+        </div>
+        <Divider />
+        <BlockCard blockHeight={selectedBlock.blockHeight} />
+      </Drawer>
     </Paper>
   );
 }

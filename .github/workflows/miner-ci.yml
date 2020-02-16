@@ -1,9 +1,9 @@
-name: Mainline CI
+name: Miner CI
 
 on: [push]
 
 jobs:
-  Build-Miner-Docker-Images:
+  Build-Miner-Docker-Image:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -12,20 +12,7 @@ jobs:
         run: git submodule update --init --recursive
 
       - name: Build Miner Docker Image
-        run: docker build bookchain-miner -t bookchain-miner:latest
-
-
-  Build-Client-Docker-Images:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-
-      - name: Prepare Environment
-        run: git submodule update --init --recursive
-
-      - name: Build Client Docker Image
-        run: docker build bookchain-client -t bookchain-client:latest
-
+        run: docker build bookchain-miner -t bookchain-miner
 
   Lint-Miner:
     runs-on: ubuntu-latest

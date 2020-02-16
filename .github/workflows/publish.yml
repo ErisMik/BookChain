@@ -1,0 +1,37 @@
+name: Publish
+
+on: [push]
+
+jobs:
+  Build-Push-Miner-Docker-Image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Prepare Environment
+        run: git submodule update --init --recursive
+
+      - name: Build Miner Docker Image
+        run: docker build bookchain-miner -t itseris/bookchain-miner:latest
+
+      - name: Push Miner Docker Image to DockerHub
+        run: |
+          docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password ${{ secrets.DOCKER_HUB_ACESS_TOKEN }}
+          docker push itseris/bookchain-miner:latest
+
+
+  Build-Push-Client-Docker-Image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Prepare Environment
+        run: git submodule update --init --recursive
+
+      - name: Build Client Docker Image
+        run: docker build bookchain-client -t itseris/bookchain-client:latest
+
+      - name: Push Client Docker Image to DockerHub
+        run: |
+          docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password ${{ secrets.DOCKER_HUB_ACESS_TOKEN }}
+          docker push itseris/bookchain-client:latest

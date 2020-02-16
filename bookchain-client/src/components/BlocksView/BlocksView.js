@@ -6,12 +6,12 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
 
 const columns = [
-  { id: 'blockHeight', label: 'Height', minWidth: 170 },
-  { id: 'blockHash', label: 'Hash', minWidth: 170 },
+  { id: 'blockHeight', label: 'Height', minWidth: 100 },
+  { id: 'blockHash', label: 'Hash', minWidth: 200 },
   { id: 'data', label: 'Data', minWidth: 170 }
 ];
 
@@ -21,6 +21,12 @@ const useStyles = makeStyles({
   },
   container: {
     maxHeight: '85vh'
+  },
+  tableDataCell: {
+    maxWidth: '80vh',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
   }
 });
 
@@ -61,10 +67,12 @@ function BlocksView(props) {
           {columns.map(column => {
             const value = block[column.id];
             return (
-              <TableCell key={column.id} align={column.align}>
-                {column.format && typeof value === 'number'
-                  ? column.format(value)
-                  : value}
+              <TableCell
+                key={column.id}
+                align={column.align}
+                className={classes.tableDataCell}
+              >
+                {value}
               </TableCell>
             );
           })}

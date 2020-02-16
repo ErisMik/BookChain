@@ -45,23 +45,12 @@ public:
         return createDtoResponse(Status::CODE_200, result);
     }
 
-    ENDPOINT("GET", "/peers/link", peersLinkGet) {
-        auto dto = PeerLinkDto::createShared();
-        dto->identifier = utils::identifierHash();
-        dto->version = versionString;
-
-        Peer peer("localhost");
+    ENDPOINT("POST", "/peers/link", peersLinkPost, BODY_DTO(PeerLinkDto::ObjectWrapper, peerDto)) {
+        std::string ipAddress = peerDto->ipAddress->std_str();
+        Peer peer (ipAddress);
         this->_peerQueue->push(peer);
 
-        return createDtoResponse(Status::CODE_200, dto);
-    }
-
-    ENDPOINT("POST", "/peers/link", peersLinkPost) {
-        auto dto = PeerLinkDto::createShared();
-        dto->identifier = utils::identifierHash();
-        dto->version = versionString;
-
-        return createDtoResponse(Status::CODE_200, dto);
+        return createResponse(Status::CODE_200, "{\"success\":true}");
     }
 
 /* Finish ENDPOINTs generation ('ApiController' codegen) */

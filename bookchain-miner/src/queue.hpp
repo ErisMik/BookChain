@@ -10,6 +10,7 @@ template <typename T>
 class ThreadsafeQueue {
 public:
     void push(T& element);
+    T front();
     T pop();
 
     bool empty();
@@ -20,12 +21,16 @@ private:
 };
 
 template <typename T>
-using sharedTSQueue = std::shared_ptr<ThreadsafeQueue<T>>;
-
-template <typename T>
 void ThreadsafeQueue<T>::push(T& element) {
     std::lock_guard<std::mutex> guard(this->_queueMutex);
     this->_queue.push(element);
+}
+
+template <typename T>
+T ThreadsafeQueue<T>::front() {
+    std::lock_guard<std::mutex> guard(this->_queueMutex);
+    T queueItem = this->_queue.front();
+    return queueItem;
 }
 
 template <typename T>
@@ -41,5 +46,8 @@ bool ThreadsafeQueue<T>::empty() {
     std::lock_guard<std::mutex> guard(this->_queueMutex);
     return this->_queue.empty();
 }
+
+template <typename T>
+using sharedTSQueue = std::shared_ptr<ThreadsafeQueue<T>>;
 
 }  // namespace bookchain

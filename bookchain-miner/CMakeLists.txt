@@ -10,7 +10,7 @@ if( NOT CLANG_TIDY_EXE )
   message( STATUS "clang-tidy not found." )
 else()
   message( STATUS "clang-tidy found: ${CLANG_TIDY_EXE}" )
-  set( DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-fuchsia-default-arguments,-fuchsia-default-arguments-calls,-modernize-use-trailing-return-type" )
+  set( DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-fuchsia-default-arguments,-fuchsia-default-arguments-calls,-modernize-use-trailing-return-type,-*-vararg" )
 endif()
 
 
@@ -49,11 +49,11 @@ endif()
 
 
 # Libbookchain
-set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/chaintools.cpp src/storage.cpp src/peers.cpp src/http/server.cpp )
+set( LIBBOOKCHAIN_SOURCES src/block.cpp src/utils.cpp src/crypto.cpp src/chain.cpp src/chaintools.cpp src/mainminer.cpp src/mainpeers.cpp src/storage.cpp src/peers.cpp src/difficulty.cpp src/http/server.cpp )
 add_library( bookchain STATIC ${LIBBOOKCHAIN_SOURCES} )
 target_compile_options( bookchain PUBLIC "-Wall" "-Wextra" "-Wpedantic" )
 target_include_directories( bookchain PUBLIC "src/" SYSTEM PRIVATE "thirdparty/nlohmann_json/include/" )
-target_link_libraries( bookchain PUBLIC pthread crypto oatpp::oatpp nlohmann_json::nlohmann_json )
+target_link_libraries( bookchain PUBLIC pthread crypto curl oatpp::oatpp nlohmann_json::nlohmann_json )
 
 
 # Main exectuable
@@ -67,7 +67,7 @@ target_link_libraries( miner PUBLIC bookchain )
 # Build tests
 if ( ENABLE_MINER_TESTS )
     enable_testing()
-    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chaintools.cpp )
+    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chaintools.cpp test/test_smoketests.cpp )
     add_executable( test_bookchain ${TEST_BOOKCHAIN_SOURCES} )
     target_include_directories( test_bookchain SYSTEM PRIVATE "thirdparty/catch/" "src/" )
     target_link_libraries( test_bookchain PUBLIC bookchain )
@@ -78,6 +78,7 @@ endif()
 
 # Use clang-tidy as a sanity checker for miner and test
 if ( ENABLE_CLANG_TIDY_CHECK AND CLANG_TIDY_EXE )
+    message( STATUS "Will run clang-tidy check." )
     set_target_properties( bookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
     set_target_properties( miner PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
     set_target_properties( test_bookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
@@ -86,6 +87,7 @@ endif()
 
 # Use IWYU as a sanity checker for miner
 if ( ENABLE_IWYU_CHECK AND IWYU_EXE )
+    message( STATUS "Will run IWYU check." )
     set_target_properties( bookchain PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "${IWYU_EXE}" )
     set_target_properties( miner PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "${IWYU_EXE}" )
 endif()

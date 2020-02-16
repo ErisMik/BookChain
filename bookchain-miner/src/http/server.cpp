@@ -12,18 +12,12 @@
 
 namespace bookchain::http {
 
-void run(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>& /* dataQueue */) {
+void run() {
     /* Register Components in scope of run() method */
     ServerComponent components;
 
     /* Get router component */
     OATPP_COMPONENT(std::shared_ptr<oatpp::web::server::HttpRouter>, router);  // NOLINT
-
-    /* Dependency Injection */
-    OATPP_CREATE_COMPONENT(sharedTSQueue<Peer>, peerQueueComponent)
-    ([peerQueue] {
-        return peerQueue;
-    }());
 
     /* Create controllers and add all of its endpoints to router */
     auto helloController = std::make_shared<HelloController>();
@@ -49,9 +43,16 @@ void run(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>&
     server.run();
 }
 
-void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>& dataQueue) {
+void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>& /* dataQueue */) {
     oatpp::base::Environment::init();
-    run(peerQueue, dataQueue);
+
+    /* Dependency Injection */
+    OATPP_CREATE_COMPONENT(sharedTSQueue<Peer>, peerQueueComponent)
+    ([peerQueue] {
+        return peerQueue;
+    }());
+
+    run();
     oatpp::base::Environment::destroy();
 }
 

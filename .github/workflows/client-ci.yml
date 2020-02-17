@@ -1,0 +1,15 @@
+name: Client CI
+
+on: [push]
+
+jobs:
+  Build-Client-Docker-Image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Prepare Environment
+        run: git submodule update --init --recursive
+
+      - name: Build Client Docker Image
+        run: docker build bookchain-client -t bookchain-client

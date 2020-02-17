@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import BlockCard from 'components/BlockCard';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Divider from '@material-ui/core/Divider';
@@ -14,6 +13,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import UrlsContext from 'contexts/UrlsContext';
+import { makeStyles } from '@material-ui/core/styles';
 
 const columns = [
   { id: 'blockHeight', label: 'Height', minWidth: 100 },

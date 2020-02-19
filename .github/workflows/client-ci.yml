@@ -13,3 +13,24 @@ jobs:
 
       - name: Build Client Docker Image
         run: docker build bookchain-client -t bookchain-client
+
+  Test-Client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Prepare Environment
+        run: |
+          git submodule update --init --recursive
+          cd bookchain-client
+          yarn install
+
+      - name: Run Tests
+        run: |
+          cd bookchain-client
+          yarn test --coverage --watchAll=false
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

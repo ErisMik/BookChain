@@ -32,7 +32,7 @@ COPY test/ ./test
 COPY src/ ./src
 
 WORKDIR /bookchain/build/build
-RUN cmake ${CMAKE_ARGS} ../ && make -j8
+RUN cmake ${CMAKE_ARGS} ../ && make -j$(nproc)
 
 
 ## Runtime image

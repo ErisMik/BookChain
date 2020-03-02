@@ -1,10 +1,16 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { mount, shallow } from 'enzyme';
 import App from './App';
+import ApplicationBar from './components/ApplicationBar'
 
-test('renders learn react link', () => {
-  render(<App />);
-  // const { getByText } = render(<App />);
-  // const linkElement = getByText(/learn react/i);
-  // expect(linkElement).toBeInTheDocument();
+test('renders ApplicationBar', () => {
+  const app = mount(<App />);
+
+  expect(app.contains(ApplicationBar)).toEqual(true);
+});
+
+test('renders Home by default', () => {
+  const app = mount(<App />);
+
+  expect(app.exists("#home")).toEqual(true);
 });

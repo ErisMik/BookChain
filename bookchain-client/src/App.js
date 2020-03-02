@@ -53,10 +53,10 @@ function App() {
                   </Switch>
                 </Route>
                 <Route path="/nodes">
-                  <p> Nodes </p>
+                  <p id="nodes"> Nodes </p>
                 </Route>
                 <Route path="/">
-                  <p> Home </p>
+                  <p id="home"> Home </p>
                 </Route>
               </Switch>
             </Paper>

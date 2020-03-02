@@ -57,6 +57,7 @@ set( LIBBOOKCHAIN_SOURCES
   src/difficulty.cpp
   src/http/server.cpp
   src/job.cpp
+  src/requests.cpp
   src/mainminer.cpp
   src/mainpeers.cpp
   src/peers.cpp

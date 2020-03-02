@@ -1,9 +1,9 @@
-#include "mainpeers.hpp"
-
 #include "block.hpp"
 #include "chain.hpp"
 #include "chaintools.hpp"
 #include "difficulty.hpp"
+#include "job.hpp"
+#include "mainpeers.hpp"
 #include "utils.hpp"
 #include <chrono>
 #include <iostream>
@@ -12,7 +12,7 @@
 
 namespace bookchain {
 
-void minerMainLoop(const sharedTSQueue<std::string>& dataQueue) {
+void minerMainLoop(const sharedTSQueue<Job>& jobQueue) {
     std::cout << "Launching miner thread" << std::endl;
 
     std::random_device randomDevice;
@@ -28,8 +28,8 @@ void minerMainLoop(const sharedTSQueue<std::string>& dataQueue) {
 
     while (true) {
         std::string data;
-        if (!dataQueue->empty()) {
-            data = dataQueue->front();
+        if (!jobQueue->empty()) {
+            data = jobQueue->front().data();
         } else {
             // TODO(Eric Mikulin): Testing, remove when it's ready to remove
             int randomDataLen = blockDataLength * (std::numeric_limits<int64_t>::max() / randomDistribution(randomDevice));
@@ -52,6 +52,7 @@ void minerMainLoop(const sharedTSQueue<std::string>& dataQueue) {
         if (verifyPair(latestBloock, miningBloock)) {
             std::cout << "Block " << utils::hexifystring(miningBloock.blockHash()) << " added to chain!" << std::endl;
             bloockchain.append(miningBloock);
+            jobQueue->pop();
         } else {
             std::cout << "Block " << utils::hexifystring(miningBloock.blockHash()) << " no longer valid" << std::endl;
         }

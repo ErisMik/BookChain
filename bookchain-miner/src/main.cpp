@@ -1,4 +1,5 @@
 #include "http/server.hpp"
+#include "job.hpp"
 #include "mainminer.hpp"
 #include "mainpeers.hpp"
 #include "peers.hpp"
@@ -27,9 +28,10 @@ int main(int /*argc*/, const char* /*argv*/[]) {
 
     auto peerQueue = std::make_shared<bookchain::ThreadsafeQueue<bookchain::Peer>>();
     auto dataQueue = std::make_shared<bookchain::ThreadsafeQueue<std::string>>();
+    auto jobQueue = std::make_shared<bookchain::ThreadsafeQueue<bookchain::Job>>();
 
-    std::thread minerThread(bookchain::minerMainLoop, dataQueue);
-    std::thread peerThread(bookchain::peerMainLoop, peerQueue);
+    std::thread minerThread(bookchain::minerMainLoop, jobQueue);
+    std::thread peerThread(bookchain::peerMainLoop, peerQueue, dataQueue, jobQueue);
     std::thread nodeThread(launchNode, peerQueue, dataQueue);
 
     minerThread.join();

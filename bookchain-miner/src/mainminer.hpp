@@ -1,10 +1,10 @@
 #pragma once
 
+#include "job.hpp"
 #include "queue.hpp"
-#include <string>
 
 namespace bookchain {
 
-void minerMainLoop(const sharedTSQueue<std::string>& dataQueue);
+void minerMainLoop(const sharedTSQueue<Job>& jobQueue);
 
 }  // namespace bookchain

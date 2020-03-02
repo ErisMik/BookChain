@@ -1,6 +1,7 @@
 #include "http/server.hpp"
 #include "http/controllers/block.hpp"
 #include "http/controllers/hello.hpp"
+#include "http/controllers/job.hpp"
 #include "http/controllers/peer.hpp"
 #include "http/servercomponent.hpp"
 #include "version.hpp"
@@ -26,6 +27,9 @@ void run() {
     auto blockController = std::make_shared<BlockController>();
     blockController->addEndpointsToRouter(router);
 
+    auto jobController = std::make_shared<JobController>();
+    jobController->addEndpointsToRouter(router);
+
     auto peerController = std::make_shared<PeerController>();
     peerController->addEndpointsToRouter(router);
 
@@ -43,13 +47,23 @@ void run() {
     server.run();
 }
 
-void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>& /* dataQueue */) {
+void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>& dataQueue, const sharedTSQueue<Job>& jobQueue) {
     oatpp::base::Environment::init();
 
     /* Dependency Injection */
     OATPP_CREATE_COMPONENT(sharedTSQueue<Peer>, peerQueueComponent)
     ([peerQueue] {
         return peerQueue;
+    }());
+
+    OATPP_CREATE_COMPONENT(sharedTSQueue<std::string>, dataQueueComponent)
+    ([dataQueue] {
+        return dataQueue;
+    }());
+
+    OATPP_CREATE_COMPONENT(sharedTSQueue<Job>, jobQueueComponent)
+    ([jobQueue] {
+        return jobQueue;
     }());
 
     run();

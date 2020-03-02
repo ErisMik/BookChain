@@ -14,10 +14,10 @@ void signalHandler(int signum) {
     exit(signum);
 }
 
-void launchNode(const bookchain::sharedTSQueue<bookchain::Peer>& peerQueue, const bookchain::sharedTSQueue<std::string>& dataQueue) {
+void launchNode(const bookchain::sharedTSQueue<bookchain::Peer>& peerQueue, const bookchain::sharedTSQueue<std::string>& dataQueue, const bookchain::sharedTSQueue<bookchain::Job>& jobQueue) {
     std::cout << "Launching node thread" << std::endl;
 
-    bookchain::http::startNodeServer(peerQueue, dataQueue);
+    bookchain::http::startNodeServer(peerQueue, dataQueue, jobQueue);
 
     std::cout << "Node thread stopped" << std::endl;
 }
@@ -32,7 +32,7 @@ int main(int /*argc*/, const char* /*argv*/[]) {
 
     std::thread minerThread(bookchain::minerMainLoop, jobQueue);
     std::thread peerThread(bookchain::peerMainLoop, peerQueue, dataQueue, jobQueue);
-    std::thread nodeThread(launchNode, peerQueue, dataQueue);
+    std::thread nodeThread(launchNode, peerQueue, dataQueue, jobQueue);
 
     minerThread.join();
     peerThread.join();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import App from './App';
-import ApplicationBar from './components/ApplicationBar'
+import ApplicationBar from './components/ApplicationBar';
 
 test('renders ApplicationBar', () => {
   const app = mount(<App />);
@@ -12,5 +12,5 @@ test('renders ApplicationBar', () => {
 test('renders Home by default', () => {
   const app = mount(<App />);
 
-  expect(app.exists("#home")).toEqual(true);
+  expect(app.exists('#home')).toEqual(true);
 });

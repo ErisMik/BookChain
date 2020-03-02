@@ -30,6 +30,21 @@ TEST_CASE("Blocks should have the same hash after copy", "[block]") {
     REQUIRE(bloock1.blockHash() == bloock3.blockHash());
 }
 
+TEST_CASE("Blocks should have the same data after copy", "[block]") {
+    constexpr int fakeHeight = 66;
+
+    bookchain::Bloock bloock1("foobarfakehash", "foobarfakehash", fakeHeight);
+    bloock1.writeData("fakedata");
+    bookchain::Bloock bloock2(bloock1);
+    bookchain::Bloock bloock3 = bloock1;
+
+    REQUIRE(bloock1.data() == bloock2.data());
+    REQUIRE(bloock1.data() == bloock3.data());
+
+    REQUIRE(bloock1.prevHash() == bloock2.prevHash());
+    REQUIRE(bloock1.prevHash() == bloock3.prevHash());
+}
+
 TEST_CASE("Block data with null bytes should still return the full data", "[block]") {
     constexpr int fakeHeight = 66;
 

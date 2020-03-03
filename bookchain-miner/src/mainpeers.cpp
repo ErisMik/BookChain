@@ -89,11 +89,8 @@ void syncPeersWithPeers(PeersList& peersList) {
     }
 }
 
-void handleNewData(const sharedTSQueue<std::string>& dataQueue, const sharedTSQueue<Job>& jobQueue) {
-    while (!dataQueue->empty()) {
-        Job newJob = Job(dataQueue->front());
-        jobQueue->push(newJob);
-    }
+void verifyNewJobs(const sharedTSQueue<Job>& jobQueue) {
+    // TODO(Eric Mikulin)
 }
 
 void syncJobsWithPeers(PeersList& peersList, const sharedTSQueue<Job>& jobQueue) {
@@ -113,7 +110,7 @@ void handleNewPeers(PeersList& peersList, const sharedTSQueue<Peer>& peerQueue) 
     }
 }
 
-void peerMainLoop(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>& dataQueue, const sharedTSQueue<Job>& jobQueue) {
+void peerMainLoop(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<Job>& jobQueue) {
     std::cout << "Launching peer thread" << std::endl;
 
     PeersList peersList;
@@ -130,7 +127,7 @@ void peerMainLoop(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std:
         syncBlocksWithPeers(peersList);
         trimJobsFromQueue(jobQueue);
         syncPeersWithPeers(peersList);
-        handleNewData(dataQueue, jobQueue);
+        verifyNewJobs(jobQueue);
         syncJobsWithPeers(peersList, jobQueue);
         handleNewPeers(peersList, peerQueue);
 

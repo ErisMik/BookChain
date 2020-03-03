@@ -47,18 +47,13 @@ void run() {
     server.run();
 }
 
-void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>& dataQueue, const sharedTSQueue<Job>& jobQueue) {
+void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<Job>& jobQueue) {
     oatpp::base::Environment::init();
 
     /* Dependency Injection */
     OATPP_CREATE_COMPONENT(sharedTSQueue<Peer>, peerQueueComponent)
     ([peerQueue] {
         return peerQueue;
-    }());
-
-    OATPP_CREATE_COMPONENT(sharedTSQueue<std::string>, dataQueueComponent)
-    ([dataQueue] {
-        return dataQueue;
     }());
 
     OATPP_CREATE_COMPONENT(sharedTSQueue<Job>, jobQueueComponent)

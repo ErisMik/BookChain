@@ -4,15 +4,28 @@
 
 namespace bookchain {
 
+enum class JobStatus {
+    NEW,
+    UNVERIFIED,
+    INVALID,
+    VALID,
+    EXPIRED
+};
+
 class Job {
 public:
-    Job(const std::string& data);
+    explicit Job(const std::string& data);
+    Job(int64_t jobId, uint64_t timestamp, const std::string& data, JobStatus status);
+    int64_t jobId() const;
     std::string data() const;
-    int jobId() const;
+    JobStatus status() const;
+    void setStatus(JobStatus newStatus);
 
 private:
-    int _jobId;
+    int64_t _jobId;
+    uint64_t _timestamp;
     std::string _data;
+    JobStatus _status;
 };
 
 }  // namespace bookchain

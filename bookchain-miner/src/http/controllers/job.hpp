@@ -19,12 +19,18 @@ JobDto::ObjectWrapper serializeJobToDTO(Job job) {
     return dto;
 }
 
+Job deserializeJobFromDTO(JobDto::ObjectWrapper dto) {
+    Job job(dto->data->std_str());
+    return job;
+}
+
 class JobController : public oatpp::web::server::api::ApiController {
 public:
     JobController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper), OATPP_COMPONENT(sharedTSQueue<Job>, jobQueueComponent)) :
         oatpp::web::server::api::ApiController(objectMapper), _jobQueue(jobQueueComponent) {}
 
 private:
+    sharedTSQueue<std::string> _dataQueue;
     sharedTSQueue<Job> _jobQueue;
 
 public:
@@ -32,7 +38,7 @@ public:
 #include OATPP_CODEGEN_BEGIN(ApiController)
 
     ADD_CORS(jobs);
-    ENDPOINT("GET", "/jobs", jobs, REQUEST(std::shared_ptr<IncomingRequest>, request)) {
+    ENDPOINT("GET", "/jobs", jobs) {
         auto result = oatpp::data::mapping::type::List<JobDto::ObjectWrapper>::createShared();
         _jobQueue->lock();
         for (auto job = _jobQueue->begin(); job != _jobQueue->end(); ++job) {
@@ -46,7 +52,9 @@ public:
 
     ADD_CORS(jobsPost);
     ENDPOINT("POST", "/jobs", jobsPost, BODY_DTO(JobDto::ObjectWrapper, jobDto)) {
-        return createResponse(Status::CODE_200, "TODO(Eric Mikulin)");
+        Job job = deserializeJobFromDTO(jobDto);
+        _jobQueue->push(job);
+        return createResponse(Status::CODE_200, "{\"success\":true}");
     }
 
     ADD_CORS(jobById);

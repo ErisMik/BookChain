@@ -1,19 +1,34 @@
 #include "job.hpp"
 #include "crypto.hpp"
+#include <chrono>
 
 namespace bookchain {
 
 Job::Job(const std::string& data) :
     _data(data) {
     this->_jobId = data.length();  // TODO(Eric Mikulin): This should be another hash style function
+    this->_timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    this->_status = JobStatus::NEW;
+}
+
+Job::Job(int64_t jobId, uint64_t timestamp, const std::string& data, JobStatus status) :
+    _jobId(jobId), _timestamp(timestamp), _data(data), _status(status) {
 }
 
 std::string Job::data() const {
     return this->_data;
 }
 
-int Job::jobId() const {
+int64_t Job::jobId() const {
     return this->_jobId;
+}
+
+JobStatus Job::status() const {
+    return this->_status;
+}
+
+void Job::setStatus(JobStatus newStatus) {
+    this->_status = newStatus;
 }
 
 }  // namespace bookchain

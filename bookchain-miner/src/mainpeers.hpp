@@ -6,6 +6,6 @@
 
 namespace bookchain {
 
-void peerMainLoop(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<std::string>& dataQueue, const sharedTSQueue<Job>& jobQueue);
+void peerMainLoop(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<Job>& jobQueue);
 
 }  // namespace bookchain

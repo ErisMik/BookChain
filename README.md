@@ -1,6 +1,7 @@
 ![Miner CI](https://github.com/ErisMik/BookChain/workflows/Miner%20CI/badge.svg)
 ![Client CI](https://github.com/ErisMik/BookChain/workflows/Client%20CI/badge.svg)
 ![Publish](https://github.com/ErisMik/BookChain/workflows/Publish/badge.svg)
+[![Coverage](https://coveralls.io/repos/github/ErisMik/BookChain/badge.svg)](https://coveralls.io/github/ErisMik/BookChain)
 
 
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/ErisMik/BookChain.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/ErisMik/BookChain/alerts/)

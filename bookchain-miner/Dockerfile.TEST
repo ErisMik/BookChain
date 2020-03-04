@@ -23,7 +23,7 @@ RUN bash -c "git clone https://github.com/oatpp/oatpp.git && \
 
 RUN apt-get update -y && apt-get install -y libcurl4-openssl-dev
 
-ARG CMAKE_ARGS=""
+ARG CMAKE_ARGS="-DENABLE_MINER_TESTS=TRUE"
 
 RUN mkdir -p /bookchain/build/build
 COPY thirdparty/ ./thirdparty
@@ -34,16 +34,4 @@ COPY src/ ./src
 WORKDIR /bookchain/build/build
 RUN cmake ${CMAKE_ARGS} ../ && make -j$(nproc)
 
-
-## Runtime image
-FROM ubuntu:bionic AS run
-RUN mkdir -p /bookchain/miner
-WORKDIR /bookchain/miner
-
-RUN apt-get update -y && apt-get install -y gdb
-RUN apt-get update -y && apt-get install -y libssl-dev libcurl4
-
-EXPOSE 8000
-COPY --from=build /bookchain/build/build/miner ./
-
-CMD ["./miner"]
+CMD ["ctest"]

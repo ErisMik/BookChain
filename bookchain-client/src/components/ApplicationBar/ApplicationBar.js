@@ -43,7 +43,7 @@ function ApplicationBar(props) {
       <Toolbar>
         <Typography
           variant="h5"
-          className={[classes.menuNavLink, classes.highlight]}
+          className={`${classes.menuNavLink} ${classes.highlight}`}
         >
           <Link href="/#/" color="inherit">
             Bookchain

@@ -66,28 +66,35 @@ target_link_libraries( miner PUBLIC bookchain )
 
 # Build tests
 if ( ENABLE_MINER_TESTS )
-    enable_testing()
-    set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chaintools.cpp test/test_smoketests.cpp )
-    add_executable( test_bookchain ${TEST_BOOKCHAIN_SOURCES} )
-    target_include_directories( test_bookchain SYSTEM PRIVATE "thirdparty/catch/" "src/" )
-    target_link_libraries( test_bookchain PUBLIC bookchain )
+  enable_testing()
+  set( TEST_BOOKCHAIN_SOURCES test/test.cpp test/test_block.cpp test/test_chaintools.cpp test/test_chain.cpp )
+  add_executable( test_bookchain ${TEST_BOOKCHAIN_SOURCES} )
+  target_include_directories( test_bookchain SYSTEM PRIVATE "thirdparty/catch/" "src/" )
+  target_link_libraries( test_bookchain PUBLIC bookchain )
 
-    add_test( libbookchain test_bookchain )
+  add_test( libbookchain test_bookchain )
+endif()
+
+
+# Add line coverage when tests are enabled
+if ( ENABLE_TEST_COVERAGE AND ENABLE_MINER_TESTS )
+  target_compile_options( bookchain PUBLIC "--coverage" )
+  target_link_libraries( bookchain PUBLIC "--coverage" )
 endif()
 
 
 # Use clang-tidy as a sanity checker for miner and test
 if ( ENABLE_CLANG_TIDY_CHECK AND CLANG_TIDY_EXE )
-    message( STATUS "Will run clang-tidy check." )
-    set_target_properties( bookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
-    set_target_properties( miner PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
-    set_target_properties( test_bookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
+  message( STATUS "Will run clang-tidy check." )
+  set_target_properties( bookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
+  set_target_properties( miner PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
+  set_target_properties( test_bookchain PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
 endif()
 
 
 # Use IWYU as a sanity checker for miner
 if ( ENABLE_IWYU_CHECK AND IWYU_EXE )
-    message( STATUS "Will run IWYU check." )
-    set_target_properties( bookchain PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "${IWYU_EXE}" )
-    set_target_properties( miner PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "${IWYU_EXE}" )
+  message( STATUS "Will run IWYU check." )
+  set_target_properties( bookchain PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "${IWYU_EXE}" )
+  set_target_properties( miner PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "${IWYU_EXE}" )
 endif()

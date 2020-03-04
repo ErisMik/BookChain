@@ -34,3 +34,17 @@ jobs:
           sed 's/clang-format/clang-format-9/' tools/checkformat.sh > tools/checkformatfixed.sh
           chmod +x tools/checkformatfixed.sh
           tools/checkformatfixed.sh
+
+  Test-Miner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Prepare Environment
+        run: git submodule update --init --recursive
+
+      - name: Build Miner Docker Image
+        run: docker build bookchain-miner -f bookchain-miner/Dockerfile.TEST -t bookchain-miner-test
+
+      - name: Run Miner Tests
+        run: docker run bookchain-miner-test

@@ -1,6 +1,7 @@
 #include "job.hpp"
 #include "crypto.hpp"
 #include <chrono>
+#include <nlohmann/json.hpp>
 
 namespace bookchain {
 
@@ -29,6 +30,27 @@ JobStatus Job::status() const {
 
 void Job::setStatus(JobStatus newStatus) {
     this->_status = newStatus;
+}
+
+Job invalidJob() {
+    constexpr int64_t invalidJobId = 0;
+    constexpr uint64_t invalidJobTimestamp = 0;
+    constexpr char invalidJobData[] = "";
+
+    return Job(invalidJobId, invalidJobTimestamp, invalidJobData, JobStatus::INVALID);
+}
+
+Job jobFromJsonString(std::string json) {
+    try {
+        auto jobJson = nlohmann::json::parse(json);
+        if (jobJson.contains("jobStatus")) {
+            return Job(jobJson["jobId"], jobJson["jobTimestamp"], jobJson["jobData"], JobStatus::UNVERIFIED);
+        } else {
+            return Job(jobJson["jobData"]);
+        }
+    } catch (...) {
+        return invalidJob();
+    }
 }
 
 }  // namespace bookchain

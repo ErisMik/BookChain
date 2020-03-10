@@ -28,4 +28,7 @@ private:
     JobStatus _status;
 };
 
+Job invalidJob();
+Job jobFromJsonString(std::string json);
+
 }  // namespace bookchain

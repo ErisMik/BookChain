@@ -51,8 +51,10 @@ public:
     }
 
     ADD_CORS(jobsPost);
-    ENDPOINT("POST", "/jobs", jobsPost, BODY_DTO(JobDto::ObjectWrapper, jobDto)) {
-        Job job = deserializeJobFromDTO(jobDto);
+    ENDPOINT("POST", "/jobs", jobsPost, REQUEST(std::shared_ptr<IncomingRequest>, request)) {
+        std::string requestBody = request->readBodyToString()->std_str();
+        Job job = jobFromJsonString(requestBody);
+
         _jobQueue->push(job);
         return createResponse(Status::CODE_200, "{\"success\":true}");
     }

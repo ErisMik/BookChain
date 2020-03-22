@@ -60,8 +60,8 @@ function ApplicationBar(props) {
           </Link>
         </Typography>
         <Typography variant="h6" className={classes.menuNavLink}>
-          <Link href="/#/nodes" color="inherit">
-            Nodes
+          <Link href="/#/network" color="inherit">
+            Network
           </Link>
         </Typography>
 

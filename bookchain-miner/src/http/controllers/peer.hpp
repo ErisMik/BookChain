@@ -31,6 +31,7 @@ public:
 /* Begin ENDPOINTs generation ('ApiController' codegen) */
 #include OATPP_CODEGEN_BEGIN(ApiController)
 
+    ADD_CORS(peers);
     ENDPOINT("GET", "/peers", peers) {
         PeersListView peersListView;
 

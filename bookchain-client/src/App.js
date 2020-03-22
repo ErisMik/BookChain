@@ -1,5 +1,7 @@
 import React from 'react';
 import ApplicationBar from './components/ApplicationBar';
+import NetworkView from './components/NetworkView';
+import PeerView from './components/PeerView';
 import BlocksView from './components/BlocksView';
 import BlockView from './components/BlockView';
 import Paper from '@material-ui/core/Paper';
@@ -52,8 +54,15 @@ function App() {
                     </Route>
                   </Switch>
                 </Route>
-                <Route path="/nodes">
-                  <p id="nodes"> Nodes </p>
+                <Route path="/network">
+                  <Switch>
+                    <Route path="/network/:identifier">
+                      <PeerView />
+                    </Route>
+                    <Route path="/network">
+                      <NetworkView />
+                    </Route>
+                  </Switch>
                 </Route>
                 <Route path="/">
                   <p id="home"> Home </p>

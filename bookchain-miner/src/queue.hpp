@@ -19,6 +19,7 @@ public:
     auto begin();
     auto end();
 
+    int length();
     bool empty();
 
 private:
@@ -65,6 +66,12 @@ auto ThreadsafeQueue<T>::begin() {
 template <typename T>
 auto ThreadsafeQueue<T>::end() {
     return this->_queue.end();
+}
+
+template <typename T>
+int ThreadsafeQueue<T>::length() {
+    std::lock_guard<std::mutex> guard(this->_queueMutex);
+    return this->_queue.size();
 }
 
 template <typename T>

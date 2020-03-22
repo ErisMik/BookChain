@@ -15,6 +15,12 @@ class JobDto : public oatpp::data::mapping::type::Object {
     DTO_FIELD(String, data);
 };
 
+class JobQueueLengthDto : public oatpp::data::mapping::type::Object {
+    DTO_INIT(JobQueueLengthDto, Object)
+
+    DTO_FIELD(UInt64, queueLength);
+};
+
 /* End DTO code-generation */
 #include OATPP_CODEGEN_END(DTO)
 

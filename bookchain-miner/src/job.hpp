@@ -21,14 +21,14 @@ public:
     JobStatus status() const;
     void setStatus(JobStatus newStatus);
 
+    static Job invalidJob();
+    static Job jobFromJsonString(std::string json);
+
 private:
     int64_t _jobId;
     uint64_t _timestamp;
     std::string _data;
     JobStatus _status;
 };
-
-Job invalidJob();
-Job jobFromJsonString(std::string json);
 
 }  // namespace bookchain

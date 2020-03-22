@@ -32,7 +32,7 @@ void Job::setStatus(JobStatus newStatus) {
     this->_status = newStatus;
 }
 
-Job invalidJob() {
+Job Job::invalidJob() {
     constexpr int64_t invalidJobId = 0;
     constexpr uint64_t invalidJobTimestamp = 0;
     constexpr char invalidJobData[] = "";
@@ -40,7 +40,7 @@ Job invalidJob() {
     return Job(invalidJobId, invalidJobTimestamp, invalidJobData, JobStatus::INVALID);
 }
 
-Job jobFromJsonString(std::string json) {
+Job Job::jobFromJsonString(std::string json) {
     try {
         auto jobJson = nlohmann::json::parse(json);
         if (jobJson.contains("jobStatus")) {
@@ -49,7 +49,7 @@ Job jobFromJsonString(std::string json) {
             return Job(jobJson["jobData"]);
         }
     } catch (...) {
-        return invalidJob();
+        return Job::invalidJob();
     }
 }
 

@@ -53,10 +53,19 @@ public:
     ADD_CORS(jobsPost);
     ENDPOINT("POST", "/jobs", jobsPost, REQUEST(std::shared_ptr<IncomingRequest>, request)) {
         std::string requestBody = request->readBodyToString()->std_str();
-        Job job = jobFromJsonString(requestBody);
+        Job job = Job::jobFromJsonString(requestBody);
 
         _jobQueue->push(job);
         return createResponse(Status::CODE_200, "{\"success\":true}");
+    }
+
+    ADD_CORS(jobsLength);
+    ENDPOINT("GET", "/jobs/queuelength", jobsLength) {
+        auto result = JobQueueLengthDto::createShared();
+
+        result->queueLength = _jobQueue->length();
+
+        return createDtoResponse(Status::CODE_200, result);
     }
 
     ADD_CORS(jobById);

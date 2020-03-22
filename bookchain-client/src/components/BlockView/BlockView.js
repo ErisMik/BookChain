@@ -16,7 +16,7 @@ function BlockView(props) {
 
   return (
     <Paper className={classes.root}>
-      <BlockCard blockHeight={height} />
+      <BlockCard hideAction={true} blockHeight={height} />
     </Paper>
   );
 }

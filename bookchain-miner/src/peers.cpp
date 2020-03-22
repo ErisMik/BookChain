@@ -42,6 +42,7 @@ std::vector<Peer> PeersListView::activePeers() {
     return activePeers;
 }
 
+// TODO(Eric Mikulin): Handle adding duplicate peers
 void PeersList::addPeer(const Peer& peer) {
     std::lock_guard<std::mutex> guard(peersListMutex);
     nodePeersList.push_back(peer);

@@ -16,7 +16,7 @@ function PeerView(props) {
 
   return (
     <Paper className={classes.root}>
-      <PeerCard ipAddress={identifier} />
+      <PeerCard hideAction={true} ipAddress={identifier} />
     </Paper>
   );
 }

@@ -3,6 +3,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import UrlsContext from 'contexts/UrlsContext';
@@ -41,6 +42,7 @@ function ApplicationBar(props) {
   return (
     <AppBar position="fixed">
       <Toolbar>
+        <MenuBookIcon fontSize="large" className={classes.menuNavLink} />
         <Typography
           variant="h5"
           className={`${classes.menuNavLink} ${classes.highlight}`}

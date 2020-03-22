@@ -15,7 +15,10 @@ import TableRow from '@material-ui/core/TableRow';
 import UrlsContext from 'contexts/UrlsContext';
 import { makeStyles } from '@material-ui/core/styles';
 
-const columns = [{ id: 'ipAddress', label: 'Hostname', minWidth: 100 }];
+const columns = [
+  { id: 'ipAddress', label: 'Hostname', minWidth: 100 },
+  { id: 'queueLength', label: 'Job Queue Size', minWidth: 100 }
+];
 
 const useStyles = makeStyles({
   root: {
@@ -45,8 +48,19 @@ function NetworkView(props) {
   React.useEffect(() => {
     fetch(`http://${urls.nodeUrl}/peers?page=${page}&page_size=${rowsPerPage}`)
       .then(result => result.json())
-      .then(peers => {
-        setPeers(peers);
+      .then(peersResult => {
+        setPeers([]);
+
+        peersResult.forEach(peer => {
+          fetch(`http://${peer.ipAddress}/jobs/queuelength`)
+            .then(result => result.json())
+            .then(result => {
+              setPeers(peers => [...peers, { ...peer, ...result }]);
+            })
+            .catch(() => {
+              setPeers(peers => [...peers, peer]);
+            });
+        });
       });
   }, [urls.nodeUrl, page, rowsPerPage]);
 

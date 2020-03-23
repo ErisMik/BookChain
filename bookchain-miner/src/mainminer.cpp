@@ -39,6 +39,7 @@ void minerMainLoop(const sharedTSQueue<Job>& jobQueue) {
 
         while (!verifyBlockDifficulty(miningBloock)) {
             miningBloock.setNonce(randomDistribution(randomDevice));
+            // TODO(Eric Mikulin): Add check (flag?) to escape if data is not valid anymore
         }
 
         std::cout << "Block " << miningHeight << " found with hash: " << utils::hexifystring(miningBloock.blockHash()) << std::endl;

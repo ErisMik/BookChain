@@ -30,12 +30,7 @@ void minerMainLoop(const sharedTSQueue<Job>& jobQueue) {
         std::string data;
         if (!jobQueue->empty()) {
             data = jobQueue->front().data();
-        } else {
-            // TODO(Eric Mikulin): Testing, remove when it's ready to remove
-            int randomDataLen = blockDataLength * (std::numeric_limits<int64_t>::max() / randomDistribution(randomDevice));
-            for (int i = 0; i < randomDataLen; ++i) {
-                data.append(1, (char)randomDistribution(randomDevice));
-            }
+            std::cout << "Starting block with data " << data << std::endl;
         }
 
         const int miningHeight = bloockchain.height() + 1;

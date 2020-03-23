@@ -27,7 +27,7 @@ void discoverInitialPeers(PeersList& peersList) {
         std::string peersResponse = requests::getRequest(peersURL);
         auto peersResponseJson = nlohmann::json::parse(peersResponse);
         for (auto& peerJson : peersResponseJson) {
-            Peer peer(peerJson["ipAddress"]);
+            Peer peer(peerJson["hostname"], peerJson["version"], peerJson["identifier"]);
             peersList.addPeer(peer);
         }
 
@@ -35,7 +35,7 @@ void discoverInitialPeers(PeersList& peersList) {
         nlohmann::json peerLinkJson = {
             {"identifier", utils::identifierHash()},
             {"version", versionString},
-            {"ipAddress", "127.0.0.1"}  // TODO(Eric Mikulin): Get the IP from the request
+            {"hostname", "127.0.0.1:8000"}  // TODO(Eric Mikulin): Get the IP from the request
         };
         std::string peerLinkResponse = requests::postRequest(peerLinkURL, peerLinkJson.dump());
         auto peerLinkResponseJson = nlohmann::json::parse(peerLinkResponse);
@@ -59,7 +59,7 @@ void syncBlocksWithPeers(PeersList& peersList) {
     Bloockchain bloockchain;
 
     for (auto& peer : peers) {
-        std::string blockLatestURL = peer.ipAddress() + "/blocks/latest/";
+        std::string blockLatestURL = peer.hostname() + "/blocks/latest/";
         std::string blockLatestResponse = requests::getRequest(blockLatestURL);
         auto blockLatestJson = nlohmann::json::parse(blockLatestResponse);
 
@@ -79,11 +79,11 @@ void syncPeersWithPeers(PeersList& peersList) {
     auto peers = peersList.activePeers();
 
     for (auto& peer : peers) {
-        std::string peersURL = peer.ipAddress() + "/peers/";
+        std::string peersURL = peer.hostname() + "/peers/";
         std::string peersResponse = requests::getRequest(peersURL);
         auto peersResponseJson = nlohmann::json::parse(peersResponse);
         for (auto& peerJson : peersResponseJson) {
-            Peer peer(peerJson["ipAddress"]);
+            Peer peer(peerJson["hostname"], peerJson["version"], peerJson["identifier"]);
             peersList.addPeer(peer);
         }
     }
@@ -105,7 +105,7 @@ void handleNewPeers(PeersList& peersList, const sharedTSQueue<Peer>& peerQueue) 
     while (!peerQueue->empty()) {
         Peer peer = peerQueue->pop();
         peer.makeActive();
-        std::cout << "GOT PEER WITH IP " << peer.ipAddress() << std::endl;
+        std::cout << "GOT PEER WITH IP " << peer.hostname() << std::endl;
         peersList.addPeer(peer);
     }
 }
@@ -116,9 +116,9 @@ void peerMainLoop(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<Job>
     PeersList peersList;
 
     // TODO(Eric Mikulin): TESTING - Prepopulate the peerslist
-    peersList.addPeer(Peer("TestingIp1"));
-    peersList.addPeer(Peer("TestingIp2"));
-    peersList.addPeer(Peer("TestingIp3"));
+    peersList.addPeer(Peer("TestingIp1", "12", 45));
+    peersList.addPeer(Peer("TestingIp2", "11", 125));
+    peersList.addPeer(Peer("TestingIp3", "15", 516));
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));  // TODO(Eric Mikulin): TESTING - Give server thread time to start
     discoverInitialPeers(peersList);

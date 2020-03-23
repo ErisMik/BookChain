@@ -56,7 +56,7 @@ function App() {
                 </Route>
                 <Route path="/network">
                   <Switch>
-                    <Route path="/network/:identifier">
+                    <Route path="/network/:hostname">
                       <PeerView />
                     </Route>
                     <Route path="/network">

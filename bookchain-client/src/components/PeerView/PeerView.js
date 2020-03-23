@@ -12,11 +12,11 @@ const useStyles = makeStyles({
 
 function PeerView(props) {
   const classes = useStyles();
-  const { identifier } = useParams();
+  const { hostname } = useParams();
 
   return (
     <Paper className={classes.root}>
-      <PeerCard hideAction={true} ipAddress={identifier} />
+      <PeerCard hideAction={true} hostname={hostname} />
     </Paper>
   );
 }

@@ -24,15 +24,15 @@ function PeerCard(props) {
     //   .then(block => {
     //     setBlock(block);
     //   });
-    setPeer({ ipAddress: props.ipAddress });
-  }, [urls.nodeUrl, props.ipAddress]);
+    setPeer({ hostname: props.hostname });
+  }, [urls.nodeUrl, props.hostname]);
 
   function renderCardActions() {
     if (props.hideAction) return '';
 
     return (
       <CardActions>
-        <Button size="small" href={`/#/network/${props.ipAddress}/`}>
+        <Button size="small" href={`/#/network/${props.hostname}/`}>
           View Peer
         </Button>
       </CardActions>
@@ -43,7 +43,7 @@ function PeerCard(props) {
     <Card className={classes.root}>
       <CardContent>
         <Typography variant="h5" component="h2">
-          {peer.ipAddress}
+          {peer.hostname}
         </Typography>
       </CardContent>
 

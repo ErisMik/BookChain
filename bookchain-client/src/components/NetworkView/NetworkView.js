@@ -16,7 +16,7 @@ import UrlsContext from 'contexts/UrlsContext';
 import { makeStyles } from '@material-ui/core/styles';
 
 const columns = [
-  { id: 'ipAddress', label: 'Hostname', minWidth: 100 },
+  { id: 'hostname', label: 'Hostname', minWidth: 100 },
   { id: 'queueLength', label: 'Job Queue Size', minWidth: 100 }
 ];
 
@@ -52,7 +52,7 @@ function NetworkView(props) {
         setPeers([]);
 
         peersResult.forEach(peer => {
-          fetch(`http://${peer.ipAddress}/jobs/queuelength`)
+          fetch(`http://${peer.hostname}/jobs/queuelength`)
             .then(result => result.json())
             .then(result => {
               setPeers(peers => [...peers, { ...peer, ...result }]);
@@ -85,7 +85,7 @@ function NetworkView(props) {
   function renderRows() {
     return peers.map(peer => {
       return (
-        <TableRow hover role="checkbox" tabIndex={-1} key={peer.ipAddress}>
+        <TableRow hover role="checkbox" tabIndex={-1} key={peer.hostname}>
           {columns.map(column => {
             const value = peer[column.id];
             return (
@@ -106,7 +106,7 @@ function NetworkView(props) {
 
   return (
     <Paper className={classes.root}>
-      <PeerCard ipAddress={urls.nodeUrl} />
+      <PeerCard hostname={urls.nodeUrl} />
       <Paper>
         <TableContainer className={classes.container}>
           <Table stickyHeader size="small" aria-label="blocks-table">
@@ -151,7 +151,7 @@ function NetworkView(props) {
           </IconButton>
         </div>
         <Divider />
-        <PeerCard ipAddress={selectedPeer.ipAddress} />
+        <PeerCard hostname={selectedPeer.hostname} />
       </Drawer>
     </Paper>
   );

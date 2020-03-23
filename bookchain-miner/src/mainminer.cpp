@@ -27,9 +27,12 @@ void minerMainLoop(const sharedTSQueue<Job>& jobQueue) {
     }
 
     while (true) {
+        Job currentJob = Job::invalidJob();
         std::string data;
+
         if (!jobQueue->empty()) {
-            data = jobQueue->front().data();
+            currentJob = jobQueue->front();
+            data = currentJob.data();
             std::cout << "Starting block with data " << data << std::endl;
         }
 
@@ -48,7 +51,9 @@ void minerMainLoop(const sharedTSQueue<Job>& jobQueue) {
         if (verifyPair(latestBloock, miningBloock)) {
             std::cout << "Block " << utils::hexifystring(miningBloock.blockHash()) << " added to chain!" << std::endl;
             bloockchain.append(miningBloock);
-            jobQueue->pop();
+            if (jobQueue->front().id() == currentJob.id()) {
+                jobQueue->pop();
+            }
         } else {
             std::cout << "Block " << utils::hexifystring(miningBloock.blockHash()) << " no longer valid" << std::endl;
         }

@@ -13,7 +13,7 @@ namespace bookchain::http {
 JobDto::ObjectWrapper serializeJobToDTO(Job job) {
     auto dto = JobDto::createShared();
 
-    dto->id = job.jobId();
+    dto->id = job.id();
     dto->data = job.data().c_str();
 
     return dto;
@@ -69,12 +69,12 @@ public:
     }
 
     ADD_CORS(jobById);
-    ENDPOINT("GET", "/jobs/{jobId}", jobById, PATH(Int64, jobId)) {
+    ENDPOINT("GET", "/jobs/{id}", jobById, PATH(Int64, id)) {
         auto dto = JobDto::createShared();
         _jobQueue->lock();
         for (auto job = _jobQueue->begin(); job != _jobQueue->end(); ++job) {
-            if (job->jobId() == jobId) {
-                auto dto = serializeJobToDTO(*job);
+            if (job->id() == id) {
+                dto = serializeJobToDTO(*job);
                 break;
             }
         }

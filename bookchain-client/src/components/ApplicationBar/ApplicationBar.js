@@ -39,6 +39,10 @@ function ApplicationBar(props) {
     window.location.href = 'https://github.com/ErisMik/BookChain';
   }
 
+  function linkToUpload() {
+    window.location.href = '/#/upload';
+  }
+
   return (
     <AppBar position="fixed">
       <Toolbar>
@@ -89,6 +93,7 @@ function ApplicationBar(props) {
             onChange={handleChangeSignerUrl}
           />
           <Button
+            onClick={() => linkToUpload()}
             variant="contained"
             color="inherit"
             className={classes.menuButton}

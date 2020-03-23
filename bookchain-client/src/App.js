@@ -4,6 +4,7 @@ import NetworkView from './components/NetworkView';
 import PeerView from './components/PeerView';
 import BlocksView from './components/BlocksView';
 import BlockView from './components/BlockView';
+import UploadView from './components/UploadView';
 import Paper from '@material-ui/core/Paper';
 import Theme from './components/Theme';
 import UrlsContext from './contexts/UrlsContext';
@@ -41,6 +42,9 @@ function App() {
 
             <Paper elevation={1} className={classes.contentArea}>
               <Switch>
+                <Route path="/upload">
+                  <UploadView />
+                </Route>
                 <Route path="/books">
                   <p> Books </p>
                 </Route>

@@ -1,8 +1,8 @@
 #pragma once
 
+#include <deque>
 #include <memory>
 #include <mutex>
-#include <queue>
 
 namespace bookchain {
 
@@ -13,17 +13,24 @@ public:
     T front();
     T pop();
 
+    void lock();
+    void unlock();
+
+    auto begin();
+    auto end();
+
+    int length();
     bool empty();
 
 private:
-    std::queue<T> _queue;
+    std::deque<T> _queue;
     std::mutex _queueMutex;
 };
 
 template <typename T>
 void ThreadsafeQueue<T>::push(T& element) {
     std::lock_guard<std::mutex> guard(this->_queueMutex);
-    this->_queue.push(element);
+    this->_queue.push_back(element);
 }
 
 template <typename T>
@@ -37,8 +44,34 @@ template <typename T>
 T ThreadsafeQueue<T>::pop() {
     std::lock_guard<std::mutex> guard(this->_queueMutex);
     T queueItem = this->_queue.front();
-    this->_queue.pop();
+    this->_queue.pop_front();
     return queueItem;
+}
+
+template <typename T>
+void ThreadsafeQueue<T>::lock() {
+    this->_queueMutex.lock();
+}
+
+template <typename T>
+void ThreadsafeQueue<T>::unlock() {
+    this->_queueMutex.unlock();
+}
+
+template <typename T>
+auto ThreadsafeQueue<T>::begin() {
+    return this->_queue.begin();
+}
+
+template <typename T>
+auto ThreadsafeQueue<T>::end() {
+    return this->_queue.end();
+}
+
+template <typename T>
+int ThreadsafeQueue<T>::length() {
+    std::lock_guard<std::mutex> guard(this->_queueMutex);
+    return this->_queue.size();
 }
 
 template <typename T>

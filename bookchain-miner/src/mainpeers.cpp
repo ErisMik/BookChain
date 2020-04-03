@@ -1,9 +1,9 @@
 #include "mainpeers.hpp"
 #include "chain.hpp"
+#include "job.hpp"
+#include "requests.hpp"
 #include "utils.hpp"
 #include "version.hpp"
-
-#include <curl/curl.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <string>
@@ -11,69 +11,11 @@
 
 namespace bookchain {
 
-size_t stringWriteCallback(char* ptr, size_t size, size_t nmemb, std::string* userdata) {
-    size_t realSize = size * nmemb;
-    userdata->append(ptr, realSize);
-
-    return realSize;
-}
-
-std::string getRequest(const std::string& url) {
-    CURL* curl = nullptr;
-    CURLcode response;
-    std::string returnString;
-
-    curl = curl_easy_init();
-    if (curl != nullptr) {
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, stringWriteCallback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &returnString);
-
-        response = curl_easy_perform(curl);
-        if (response != CURLE_OK) {
-            returnString = "";
-        }
-
-        curl_easy_cleanup(curl);
-    }
-
-    return (returnString.empty()) ? "{}" : returnString;
-}
-
-std::string postRequest(const std::string& url, const std::string& payload) {
-    CURL* curl = nullptr;
-    CURLcode response;
-    std::string returnString;
-
-    curl = curl_easy_init();
-    ;
-    if (curl != nullptr) {
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.c_str());
-
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, stringWriteCallback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &returnString);
-
-        response = curl_easy_perform(curl);
-        if (response != CURLE_OK) {
-            returnString = "";
-        }
-
-        curl_easy_cleanup(curl);
-    }
-
-    return (returnString.empty()) ? "{}" : returnString;
-}
-
 void discoverInitialPeers(PeersList& peersList) {
     const std::array<std::string, 1> peerHints = {"127.0.0.1:8000"};
 
     auto discoverPeer = [&peersList](const std::string& peerHint) {
-        std::string findResponse = getRequest(peerHint);
+        std::string findResponse = requests::getRequest(peerHint);
         auto findResponseJson = nlohmann::json::parse(findResponse);
         if (findResponseJson.count("identifier") == 0) {
             // Peer gave response but not the one we expect
@@ -82,10 +24,10 @@ void discoverInitialPeers(PeersList& peersList) {
         }
 
         std::string peersURL = peerHint + "/peers/";
-        std::string peersResponse = getRequest(peersURL);
+        std::string peersResponse = requests::getRequest(peersURL);
         auto peersResponseJson = nlohmann::json::parse(peersResponse);
         for (auto& peerJson : peersResponseJson) {
-            Peer peer(peerJson["ipAddress"]);
+            Peer peer(peerJson["hostname"], peerJson["version"], peerJson["identifier"]);
             peersList.addPeer(peer);
         }
 
@@ -93,9 +35,9 @@ void discoverInitialPeers(PeersList& peersList) {
         nlohmann::json peerLinkJson = {
             {"identifier", utils::identifierHash()},
             {"version", versionString},
-            {"ipAddress", "127.0.0.1"}  // TODO(Eric Mikulin): Get the IP from the request
+            {"hostname", "127.0.0.1:8000"}  // TODO(Eric Mikulin): Get the IP from the request
         };
-        std::string peerLinkResponse = postRequest(peerLinkURL, peerLinkJson.dump());
+        std::string peerLinkResponse = requests::postRequest(peerLinkURL, peerLinkJson.dump());
         auto peerLinkResponseJson = nlohmann::json::parse(peerLinkResponse);
         if (peerLinkResponseJson.count("success") == 0) {
             std::cout << "Failed to link with peer" << std::endl;
@@ -117,8 +59,8 @@ void syncBlocksWithPeers(PeersList& peersList) {
     Bloockchain bloockchain;
 
     for (auto& peer : peers) {
-        std::string blockLatestURL = peer.ipAddress() + "/blocks/latest/";
-        std::string blockLatestResponse = getRequest(blockLatestURL);
+        std::string blockLatestURL = peer.hostname() + "/blocks/latest/";
+        std::string blockLatestResponse = requests::getRequest(blockLatestURL);
         auto blockLatestJson = nlohmann::json::parse(blockLatestResponse);
 
         if (blockLatestJson["blockHeight"] > bloockchain.height()) {
@@ -127,50 +69,66 @@ void syncBlocksWithPeers(PeersList& peersList) {
     }
 }
 
+void trimJobsFromQueue(const sharedTSQueue<Job>& jobQueue) {
+    // TODO(Eric Mikulin)
+    // Notes: Use JOB timestamp and block timestamp,
+    // go back in chain till timestamp of block is before job
+}
+
 void syncPeersWithPeers(PeersList& peersList) {
     auto peers = peersList.activePeers();
 
     for (auto& peer : peers) {
-        std::string peersURL = peer.ipAddress() + "/peers/";
-        std::string peersResponse = getRequest(peersURL);
+        std::string peersURL = peer.hostname() + "/peers/";
+        std::string peersResponse = requests::getRequest(peersURL);
         auto peersResponseJson = nlohmann::json::parse(peersResponse);
         for (auto& peerJson : peersResponseJson) {
-            Peer peer(peerJson["ipAddress"]);
+            Peer peer(peerJson["hostname"], peerJson["version"], peerJson["identifier"]);
             peersList.addPeer(peer);
         }
     }
 }
 
-void syncDataWithPeers(PeersList& peersList) {
+void verifyNewJobs(const sharedTSQueue<Job>& jobQueue) {
     // TODO(Eric Mikulin)
+}
+
+void syncJobsWithPeers(PeersList& peersList, const sharedTSQueue<Job>& jobQueue) {
+    auto peers = peersList.activePeers();
+
+    for (auto& peer : peers) {
+        // TODO(Eric Mikulin)
+    }
 }
 
 void handleNewPeers(PeersList& peersList, const sharedTSQueue<Peer>& peerQueue) {
     while (!peerQueue->empty()) {
         Peer peer = peerQueue->pop();
         peer.makeActive();
-        std::cout << "GOT PEER WITH IP " << peer.ipAddress() << std::endl;
+        std::cout << "GOT PEER WITH IP " << peer.hostname() << std::endl;
         peersList.addPeer(peer);
     }
 }
 
-void peerMainLoop(const sharedTSQueue<Peer>& peerQueue) {
+void peerMainLoop(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<Job>& jobQueue) {
     std::cout << "Launching peer thread" << std::endl;
 
     PeersList peersList;
 
     // TODO(Eric Mikulin): TESTING - Prepopulate the peerslist
-    peersList.addPeer(Peer("TestingIp1"));
-    peersList.addPeer(Peer("TestingIp2"));
-    peersList.addPeer(Peer("TestingIp3"));
+    peersList.addPeer(Peer("TestingIp1", "12", 45));
+    peersList.addPeer(Peer("TestingIp2", "11", 125));
+    peersList.addPeer(Peer("TestingIp3", "15", 516));
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));  // TODO(Eric Mikulin): TESTING - Give server thread time to start
     discoverInitialPeers(peersList);
 
     while (true) {
         syncBlocksWithPeers(peersList);
+        trimJobsFromQueue(jobQueue);
         syncPeersWithPeers(peersList);
-        syncDataWithPeers(peersList);
+        verifyNewJobs(jobQueue);
+        syncJobsWithPeers(peersList, jobQueue);
         handleNewPeers(peersList, peerQueue);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));

@@ -1,7 +1,10 @@
 import React from 'react';
 import ApplicationBar from './components/ApplicationBar';
+import NetworkView from './components/NetworkView';
+import PeerView from './components/PeerView';
 import BlocksView from './components/BlocksView';
 import BlockView from './components/BlockView';
+import UploadView from './components/UploadView';
 import Paper from '@material-ui/core/Paper';
 import Theme from './components/Theme';
 import UrlsContext from './contexts/UrlsContext';
@@ -39,6 +42,9 @@ function App() {
 
             <Paper elevation={1} className={classes.contentArea}>
               <Switch>
+                <Route path="/upload">
+                  <UploadView />
+                </Route>
                 <Route path="/books">
                   <p> Books </p>
                 </Route>
@@ -52,8 +58,15 @@ function App() {
                     </Route>
                   </Switch>
                 </Route>
-                <Route path="/nodes">
-                  <p id="nodes"> Nodes </p>
+                <Route path="/network">
+                  <Switch>
+                    <Route path="/network/:hostname">
+                      <PeerView />
+                    </Route>
+                    <Route path="/network">
+                      <NetworkView />
+                    </Route>
+                  </Switch>
                 </Route>
                 <Route path="/">
                   <p id="home"> Home </p>

@@ -3,6 +3,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import UrlsContext from 'contexts/UrlsContext';
@@ -38,9 +39,14 @@ function ApplicationBar(props) {
     window.location.href = 'https://github.com/ErisMik/BookChain';
   }
 
+  function linkToUpload() {
+    window.location.href = '/#/upload';
+  }
+
   return (
     <AppBar position="fixed">
       <Toolbar>
+        <MenuBookIcon fontSize="large" className={classes.menuNavLink} />
         <Typography
           variant="h5"
           className={`${classes.menuNavLink} ${classes.highlight}`}
@@ -60,8 +66,8 @@ function ApplicationBar(props) {
           </Link>
         </Typography>
         <Typography variant="h6" className={classes.menuNavLink}>
-          <Link href="/#/nodes" color="inherit">
-            Nodes
+          <Link href="/#/network" color="inherit">
+            Network
           </Link>
         </Typography>
 
@@ -87,6 +93,7 @@ function ApplicationBar(props) {
             onChange={handleChangeSignerUrl}
           />
           <Button
+            onClick={() => linkToUpload()}
             variant="contained"
             color="inherit"
             className={classes.menuButton}

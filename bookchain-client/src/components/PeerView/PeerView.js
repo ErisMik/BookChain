@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useParams } from 'react-router-dom';
-import BlockCard from 'components/BlockCard';
+import PeerCard from 'components/PeerCard';
 import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles({
@@ -10,15 +10,15 @@ const useStyles = makeStyles({
   }
 });
 
-function BlockView(props) {
+function PeerView(props) {
   const classes = useStyles();
-  const { height } = useParams();
+  const { hostname } = useParams();
 
   return (
     <Paper className={classes.root}>
-      <BlockCard hideAction={true} blockHeight={height} />
+      <PeerCard hideAction={true} hostname={hostname} />
     </Paper>
   );
 }
 
-export default BlockView;
+export default PeerView;

@@ -1,5 +1,7 @@
 #include "utils.hpp"
 #include <iomanip>
+#include <limits>
+#include <random>
 #include <sstream>
 
 namespace bookchain::utils {
@@ -9,8 +11,12 @@ constexpr char identifier[] = "Bookchain!";
 }  //namespace
 
 uint64_t identifierHash() {
-    size_t hash = std::hash<std::string> {}(&identifier[0]);
-    return uint64_t(hash);
+    // size_t hash = std::hash<std::string> {}(&identifier[0]);
+    static std::random_device rd;
+    static std::uniform_int_distribution<uint64_t> dist(std::numeric_limits<uint64_t>::min(), std::numeric_limits<uint64_t>::max());
+    static const uint64_t identifier = dist(rd);
+
+    return identifier;
 }
 
 std::string hexifystring(const std::string& data) {

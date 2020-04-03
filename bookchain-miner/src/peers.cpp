@@ -11,8 +11,12 @@ std::vector<Peer> nodePeersList;
 
 std::mutex peersListMutex;
 
-Peer::Peer(std::string ipAddress) :
-    _active(true), _ipAddress(std::move(ipAddress)) {
+Peer::Peer() :
+    _active(false), _hostname(""), _version(""), _identifier(0) {
+}
+
+Peer::Peer(std::string hostname, std::string version, uint64_t identifier) :
+    _active(true), _hostname(std::move(hostname)), _version(std::move(version)), _identifier(identifier) {
 }
 
 bool Peer::active() {
@@ -27,8 +31,16 @@ void Peer::makeActive() {
     this->_active = true;
 }
 
-std::string Peer::ipAddress() {
-    return this->_ipAddress;
+std::string Peer::hostname() const {
+    return this->_hostname;
+}
+
+std::string Peer::version() const {
+    return this->_version;
+}
+
+uint64_t Peer::identifier() const {
+    return this->_identifier;
 }
 
 std::vector<Peer> PeersListView::activePeers() {
@@ -42,9 +54,21 @@ std::vector<Peer> PeersListView::activePeers() {
     return activePeers;
 }
 
+// TODO(Eric Mikulin): Handle adding duplicate peers
 void PeersList::addPeer(const Peer& peer) {
     std::lock_guard<std::mutex> guard(peersListMutex);
-    nodePeersList.push_back(peer);
+    bool unique = true;
+
+    for (auto& otherPeer : nodePeersList) {
+        if (peer.identifier() == otherPeer.identifier()) {
+            unique = false;
+            break;
+        }
+    }
+
+    if (unique) {
+        nodePeersList.push_back(peer);
+    }
 }
 
 }  // namespace bookchain

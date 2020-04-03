@@ -13,12 +13,15 @@ class PeerLinkDto : public oatpp::data::mapping::type::Object {
 
     DTO_FIELD(UInt64, identifier);
     DTO_FIELD(String, version);
-    DTO_FIELD(String, ipAddress);
+    DTO_FIELD(String, hostname);
 };
 
 class PeerDto : public oatpp::data::mapping::type::Object {
     DTO_INIT(PeerDto, Object)
-    DTO_FIELD(String, ipAddress);
+
+    DTO_FIELD(UInt64, identifier);
+    DTO_FIELD(String, version);
+    DTO_FIELD(String, hostname);
 };
 
 /* End DTO code-generation */

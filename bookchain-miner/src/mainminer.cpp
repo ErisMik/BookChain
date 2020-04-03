@@ -1,9 +1,9 @@
-#include "mainpeers.hpp"
-
 #include "block.hpp"
 #include "chain.hpp"
 #include "chaintools.hpp"
 #include "difficulty.hpp"
+#include "job.hpp"
+#include "mainpeers.hpp"
 #include "utils.hpp"
 #include <chrono>
 #include <iostream>
@@ -12,7 +12,7 @@
 
 namespace bookchain {
 
-void minerMainLoop(const sharedTSQueue<std::string>& dataQueue) {
+void minerMainLoop(const sharedTSQueue<Job>& jobQueue) {
     std::cout << "Launching miner thread" << std::endl;
 
     std::random_device randomDevice;
@@ -27,15 +27,13 @@ void minerMainLoop(const sharedTSQueue<std::string>& dataQueue) {
     }
 
     while (true) {
+        Job currentJob = Job::invalidJob();
         std::string data;
-        if (!dataQueue->empty()) {
-            data = dataQueue->front();
-        } else {
-            // TODO(Eric Mikulin): Testing, remove when it's ready to remove
-            int randomDataLen = blockDataLength * (std::numeric_limits<int64_t>::max() / randomDistribution(randomDevice));
-            for (int i = 0; i < randomDataLen; ++i) {
-                data.append(1, (char)randomDistribution(randomDevice));
-            }
+
+        if (!jobQueue->empty()) {
+            currentJob = jobQueue->front();
+            data = currentJob.data();
+            std::cout << "Starting block with data " << data << std::endl;
         }
 
         const int miningHeight = bloockchain.height() + 1;
@@ -44,6 +42,7 @@ void minerMainLoop(const sharedTSQueue<std::string>& dataQueue) {
 
         while (!verifyBlockDifficulty(miningBloock)) {
             miningBloock.setNonce(randomDistribution(randomDevice));
+            // TODO(Eric Mikulin): Add check (flag?) to escape if data is not valid anymore
         }
 
         std::cout << "Block " << miningHeight << " found with hash: " << utils::hexifystring(miningBloock.blockHash()) << std::endl;
@@ -52,6 +51,9 @@ void minerMainLoop(const sharedTSQueue<std::string>& dataQueue) {
         if (verifyPair(latestBloock, miningBloock)) {
             std::cout << "Block " << utils::hexifystring(miningBloock.blockHash()) << " added to chain!" << std::endl;
             bloockchain.append(miningBloock);
+            if (jobQueue->front().id() == currentJob.id()) {
+                jobQueue->pop();
+            }
         } else {
             std::cout << "Block " << utils::hexifystring(miningBloock.blockHash()) << " no longer valid" << std::endl;
         }

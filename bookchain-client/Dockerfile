@@ -2,7 +2,7 @@
 
 
 ## Prebuild image
-FROM node:13-slim AS build
+FROM node:13 AS build
 RUN mkdir -p /bookchain/build
 WORKDIR /bookchain/build
 

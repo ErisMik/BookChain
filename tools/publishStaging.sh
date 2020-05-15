@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Bookchain Staging Publish Script
 # Run from root directory
 

@@ -11,7 +11,7 @@
 
 namespace bookchain::http {
 
-PeerDto::ObjectWrapper serializePeerToDTO(Peer peer) {
+PeerDto::ObjectWrapper serializePeerToDTO(Peer& peer) {
     auto dto = PeerDto::createShared();
 
     dto->hostname = peer.hostname().c_str();

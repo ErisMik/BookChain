@@ -7,29 +7,34 @@
 
 namespace bookchain::http {
 
-constexpr int serverPort = 8000;
-
 class ServerComponent {
+private:
+    int serverPort;
+
+public:
+    ServerComponent(int customServerPort) :
+        serverPort(customServerPort) {};
+
 public:
     /**
-   *  Create ConnectionProvider component which listens on the port
-   */
+    *  Create ConnectionProvider component which listens on the port
+    */
     OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::network::ServerConnectionProvider>, serverConnectionProvider)
-    ([] {
-        return oatpp::network::server::SimpleTCPConnectionProvider::createShared(serverPort);
+    ([this] {
+        return oatpp::network::server::SimpleTCPConnectionProvider::createShared(this->serverPort);
     }());
 
     /**
-   *  Create Router component
-   */
+    *  Create Router component
+    */
     OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::web::server::HttpRouter>, httpRouter)
     ([] {
         return oatpp::web::server::HttpRouter::createShared();
     }());
 
     /**
-   *  Create ConnectionHandler component which uses Router component to route requests
-   */
+    *  Create ConnectionHandler component which uses Router component to route requests
+    */
     OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::network::server::ConnectionHandler>, serverConnectionHandler)
     ([] {
         OATPP_COMPONENT(std::shared_ptr<oatpp::web::server::HttpRouter>, router);  // get Router component
@@ -37,8 +42,8 @@ public:
     }());
 
     /**
-   *  Create ObjectMapper component to serialize/deserialize DTOs in Contoller's API
-   */
+    *  Create ObjectMapper component to serialize/deserialize DTOs in Contoller's API
+    */
     OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::data::mapping::ObjectMapper>, apiObjectMapper)
     ([] {
         return oatpp::parser::json::mapping::ObjectMapper::createShared();

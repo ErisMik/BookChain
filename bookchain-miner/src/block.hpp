@@ -24,6 +24,9 @@ public:
     Bloock(const std::string& prevHash, const std::string& seedHash, int64_t blockHeight);
     explicit Bloock(const Block& block);
 
+    static std::string toJsonString(Bloock bloock);
+    static Bloock fromJsonString(std::string& bloockJsonString);
+
     Block block();
     std::string blockHash();
 

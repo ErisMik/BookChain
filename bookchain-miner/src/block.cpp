@@ -2,6 +2,7 @@
 #include "crypto.hpp"
 #include <cstring>
 #include <iostream>
+#include <nlohmann/json.hpp>
 #include <string>
 
 namespace bookchain {
@@ -21,6 +22,33 @@ Bloock::Bloock(const std::string& prevHash, const std::string& seedHash, int64_t
 Bloock::Bloock(const Block& block) :
     Bloock() {
     this->_block = block;
+}
+
+std::string Bloock::toJsonString(Bloock bloock) {
+    nlohmann::json bloockJson;
+
+    bloockJson["prevHash"] = bloock.block().prevHash;
+    bloockJson["seedHash"] = bloock.block().seedHash;
+    bloockJson["blockHeight"] = bloock.block().blockHeight;
+    bloockJson["nonce"] = bloock.block().nonce;
+    bloockJson["signature"] = bloock.block().signature;
+    bloockJson["data"] = bloock.block().data;
+
+    return bloockJson.dump();
+}
+
+Bloock Bloock::fromJsonString(std::string& bloockJsonString) {
+    auto bloockJson = nlohmann::json::parse(bloockJsonString);
+
+    Block block = {};
+    strncpy(&block.prevHash[0], bloockJson["prevHash"].get<std::string>().c_str(), hashBufferLength);
+    strncpy(&block.seedHash[0], bloockJson["seedHash"].get<std::string>().c_str(), hashBufferLength);
+    block.blockHeight = bloockJson["blockHeight"];
+    block.nonce = bloockJson["nonce"];
+    strncpy(&block.signature[0], bloockJson["signature"].get<std::string>().c_str(), hashBufferLength);
+    strncpy(&block.data[0], bloockJson["data"].get<std::string>().c_str(), blockDataLength);
+
+    return Bloock(block);
 }
 
 Block Bloock::block() {

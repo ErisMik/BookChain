@@ -8,7 +8,9 @@
 namespace bookchain {
 namespace http {
 
-void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<Job>& jobQueue);
+constexpr int defaultServerPort = 8000;
+
+void startNodeServer(int serverPort, const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<Job>& jobQueue);
 
 }  // namespace http
 }  // namespace bookchain

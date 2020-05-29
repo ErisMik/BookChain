@@ -25,7 +25,8 @@ protected:
 class Bloockchain : public BlookchainView {
 public:
     Bloockchain(const std::string& chainId = bloockchainFilename);
-    void append(Bloock& bloock);
+    bool append(Bloock& bloock);
+    void forceAppend(Bloock& bloock);
 
     void purge();
 };

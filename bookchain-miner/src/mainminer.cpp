@@ -23,7 +23,7 @@ void minerMainLoop(const sharedTSQueue<Job>& jobQueue) {
         std::cout << "No chain found, creating a new chain" << std::endl;
         Bloock genesisBloock("P R E V H A S H", "S E E D H A S H", 0);
         genesisBloock.writeData("G E N E S I S");
-        bloockchain.append(genesisBloock);
+        bloockchain.forceAppend(genesisBloock);
     }
 
     while (true) {

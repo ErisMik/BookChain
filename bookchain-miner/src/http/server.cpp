@@ -13,9 +13,9 @@
 
 namespace bookchain::http {
 
-void run() {
+void run(int serverPort) {
     /* Register Components in scope of run() method */
-    ServerComponent components;
+    ServerComponent components(serverPort);
 
     /* Get router component */
     OATPP_COMPONENT(std::shared_ptr<oatpp::web::server::HttpRouter>, router);  // NOLINT
@@ -47,7 +47,7 @@ void run() {
     server.run();
 }
 
-void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<Job>& jobQueue) {
+void startNodeServer(int serverPort, const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<Job>& jobQueue) {
     oatpp::base::Environment::init();
 
     /* Dependency Injection */
@@ -61,7 +61,7 @@ void startNodeServer(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<J
         return jobQueue;
     }());
 
-    run();
+    run(serverPort);
     oatpp::base::Environment::destroy();
 }
 

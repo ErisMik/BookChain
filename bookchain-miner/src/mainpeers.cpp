@@ -1,4 +1,5 @@
 #include "mainpeers.hpp"
+#include "block.hpp"
 #include "chain.hpp"
 #include "job.hpp"
 #include "requests.hpp"
@@ -63,8 +64,17 @@ void syncBlocksWithPeers(PeersList& peersList) {
         std::string blockLatestResponse = requests::getRequest(blockLatestURL);
         auto blockLatestJson = nlohmann::json::parse(blockLatestResponse);
 
-        if (blockLatestJson["blockHeight"] > bloockchain.height()) {
-            // TODO(Eric Mikulin): Merge the chains
+        int targetBlockHeight = bloockchain.height();
+        while (blockLatestJson["blockHeight"] > targetBlockHeight) {
+            targetBlockHeight += 1;
+
+            std::cout << "Pulling block " << targetBlockHeight << " from " << peer.hostname() << std::endl;
+
+            std::string targetBlockURL = peer.hostname() + "/blocks/" + std::to_string(targetBlockHeight);
+            std::string targetBlockResponse = requests::getRequest(targetBlockURL);
+            Bloock targetBloock = Bloock::fromJsonString(targetBlockResponse);
+
+            bloockchain.append(targetBloock);
         }
     }
 }
@@ -114,13 +124,6 @@ void peerMainLoop(const sharedTSQueue<Peer>& peerQueue, const sharedTSQueue<Job>
     std::cout << "Launching peer thread" << std::endl;
 
     PeersList peersList;
-
-    // TODO(Eric Mikulin): TESTING - Prepopulate the peerslist
-    peersList.addPeer(Peer("TestingIp1", "12", 45));
-    peersList.addPeer(Peer("TestingIp2", "11", 125));
-    peersList.addPeer(Peer("TestingIp3", "15", 516));
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(3000));  // TODO(Eric Mikulin): TESTING - Give server thread time to start
     discoverInitialPeers(peersList);
 
     while (true) {

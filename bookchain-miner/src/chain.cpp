@@ -1,4 +1,5 @@
 #include "chain.hpp"
+#include "chaintools.hpp"
 #include "storage.hpp"
 
 namespace bookchain {
@@ -37,7 +38,17 @@ Bloockchain::Bloockchain(const std::string& chainId) :
     BlookchainView(chainId) {
 }
 
-void Bloockchain::append(Bloock& bloock) {
+bool Bloockchain::append(Bloock& bloock) {
+    Bloock latestBloock = this->latest();
+    if (verifyPair(latestBloock, bloock)) {
+        storage::appendChain(bloock, this->_chainId);
+        return true;
+    }
+
+    return false;
+}
+
+void Bloockchain::forceAppend(Bloock& bloock) {
     storage::appendChain(bloock, this->_chainId);
 }
 
